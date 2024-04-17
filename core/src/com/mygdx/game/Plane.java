@@ -46,6 +46,4 @@ public class Plane extends ApplicationAdapter {
 	public void dispose () {
 		batch.dispose();
 	}
-
-
 }
