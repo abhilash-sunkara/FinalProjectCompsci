@@ -106,4 +106,8 @@ public class BluePlaneSprite {
         sprite.draw(renderer);
     }
 
+    public Sprite getSprite(){
+        return sprite;
+    }
+
 }
