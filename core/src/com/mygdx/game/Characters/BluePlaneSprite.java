@@ -5,6 +5,8 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 
 import java.util.ArrayList;
 
@@ -16,12 +18,31 @@ public class BluePlaneSprite {
     float timeSeconds = 0f;
     float weaponFireDelay = 1f;
     private boolean canShoot = true;
+    private BodyDef bf = new BodyDef();
+    private Body planeBody;
+    private final float MAX_VEL = 1000f;
+    private World world;
 
-    public BluePlaneSprite(String imgFile, SpriteBatch batch){
+
+    public BluePlaneSprite(String imgFile, SpriteBatch batch, World world){
         sprite = new Sprite(new Texture(Gdx.files.internal(imgFile)));
         renderer = batch;
+        bf.type = BodyType.DynamicBody;
+        this.world = world;
+        planeBody = world.createBody(bf);
+        planeBody.setUserData(sprite);
+        planeBody.setLinearDamping(2.0f);
+
+        CircleShape cs = new CircleShape();
+        cs.setRadius(32f);
+        FixtureDef fd = new FixtureDef();
+        fd.shape = cs;
+        Fixture fixture = planeBody.createFixture(fd);
+        fixture.setUserData(this);
+        System.out.println(fixture);
     }
 
+    /*
     public void planeMovement(){
         if(Gdx.input.isKeyPressed(Input.Keys.UP)){
             sprite.translateY(2);
@@ -36,13 +57,31 @@ public class BluePlaneSprite {
             sprite.translateX(-2);
         }
     }
+    */
+
+    public void planeMovement(){
+        if(Gdx.input.isKeyPressed(Input.Keys.RIGHT) && planeBody.getLinearVelocity().x < MAX_VEL){
+            planeBody.applyForceToCenter(1000.0f, 0f, true);
+        }
+        if(Gdx.input.isKeyPressed(Input.Keys.LEFT) && planeBody.getLinearVelocity().x > -MAX_VEL) {
+            planeBody.applyForceToCenter(-1000.0f, 0f, true);
+        }
+        if(Gdx.input.isKeyPressed(Input.Keys.UP) && planeBody.getLinearVelocity().y < MAX_VEL) {
+            planeBody.applyForceToCenter(0f, 1000.0f, true);
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.DOWN) && planeBody.getLinearVelocity().y > -MAX_VEL){
+            planeBody.applyForceToCenter(0f, -1000.0f, true);
+        }
+        //System.out.println(planeBody.getPosition().x);
+        sprite.setPosition(planeBody.getPosition().x, planeBody.getPosition().y);
+    }
 
     public void weaponControl(){
 
         timeSeconds += Gdx.graphics.getDeltaTime();
 
         if(Gdx.input.isKeyPressed(Input.Keys.SPACE) && canShoot){
-            bulletManager.add(new Bullet("largeBullet.png", renderer).setPosition(sprite.getX() + 16, sprite.getY() + 20));
+            bulletManager.add(new Bullet("largeBullet.png", renderer, world).setPosition(sprite.getX() + 16, sprite.getY() + 40));
             canShoot = false;
         }
         if(timeSeconds > weaponFireDelay){
@@ -56,7 +95,6 @@ public class BluePlaneSprite {
                 i--;
             } else{
                 bulletManager.get(i).update();
-
             }
         }
 
