@@ -22,6 +22,7 @@ public class Plane extends ApplicationAdapter {
 	String enemyPlaneImg = "ship_0001.png";
 	BluePlaneSprite planeSprite;
 	EnemyPlaneSprite enemyPlaneSprite;
+	EnemyManager boss;
 	
 	@Override
 	public void create () {
@@ -30,6 +31,8 @@ public class Plane extends ApplicationAdapter {
 		batch = new SpriteBatch();
 		planeSprite = new BluePlaneSprite(bluePlaneImg, batch);
 		enemyPlaneSprite = new EnemyPlaneSprite(enemyPlaneImg, batch);
+		boss = new EnemyManager(batch);
+		boss.create();
 		//player.create(bluePlaneImg);
 	}
 
@@ -39,6 +42,7 @@ public class Plane extends ApplicationAdapter {
 		batch.begin();
 		planeSprite.update();
 		enemyPlaneSprite.update();
+		boss.update();
 		batch.end();
 	}
 	
