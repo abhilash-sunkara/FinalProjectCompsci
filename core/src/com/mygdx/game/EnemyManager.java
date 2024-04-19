@@ -22,9 +22,9 @@ public class EnemyManager{
     public void update(){
         time += Gdx.graphics.getDeltaTime();
         if(time % 2000 == 0){
-            System.out.println("fuck java");
-            EnemyPlaneSprite e = new EnemyPlaneSprite("ship_0001.png", batch);
-            enemies.add(e);
+            System.out.println("fuck java"); //dawg we cannot have this on a public repo
+            //EnemyPlaneSprite e = new EnemyPlaneSprite("ship_0001.png", batch);
+            //enemies.add(e);
         }
         for(int i = 0; i < enemies.size(); i++){
             enemies.get(i).update();

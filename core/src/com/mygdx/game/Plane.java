@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.mygdx.game.Background.MovingBackgroundOcean;
 import com.mygdx.game.Characters.BluePlane;
 import com.mygdx.game.Characters.BluePlaneSprite;
 import com.mygdx.game.Characters.EnemyPlaneSprite;
@@ -23,25 +24,30 @@ public class Plane extends ApplicationAdapter {
 	BluePlaneSprite planeSprite;
 	EnemyPlaneSprite enemyPlaneSprite;
 	EnemyManager boss;
+
+	MovingBackgroundOcean backgroundOcean;
 	
 	@Override
 	public void create () {
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, 800, 480);
 		batch = new SpriteBatch();
-		planeSprite = new BluePlaneSprite(bluePlaneImg, batch);
-		enemyPlaneSprite = new EnemyPlaneSprite(enemyPlaneImg, batch);
+		//planeSprite = new BluePlaneSprite(bluePlaneImg, batch);
+		//enemyPlaneSprite = new EnemyPlaneSprite(enemyPlaneImg, batch);
 		boss = new EnemyManager(batch);
 		boss.create();
 		//player.create(bluePlaneImg);
+
+		backgroundOcean = new MovingBackgroundOcean();
 	}
 
 	@Override
 	public void render () {
 		ScreenUtils.clear(1, 1, 1, 1);
 		batch.begin();
-		planeSprite.update();
-		enemyPlaneSprite.update();
+		//planeSprite.update();
+		//enemyPlaneSprite.update();
+		backgroundOcean.updateAndRender(Gdx.graphics.getDeltaTime(),batch);
 		boss.update();
 		batch.end();
 	}
