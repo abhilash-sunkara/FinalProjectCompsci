@@ -7,7 +7,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.physics.box2d.*;
 
 public class Bullet {
-    //initial push
+
     public Sprite sprite;
     public SpriteBatch renderer;
     public boolean isActive = true;
