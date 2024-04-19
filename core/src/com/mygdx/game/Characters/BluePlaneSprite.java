@@ -82,7 +82,7 @@ public class BluePlaneSprite {
         timeSeconds += Gdx.graphics.getDeltaTime();
 
         if(Gdx.input.isKeyPressed(Input.Keys.SPACE) && canShoot){
-            bulletManager.add(new Bullet("largeBullet.png", renderer, world).setPosition(sprite.getX() + 16, sprite.getY() + 40));
+            bulletManager.add(new Bullet("tracer.png", renderer, world).setPosition(sprite.getX() + 16, sprite.getY() + 40));
             canShoot = false;
             System.out.println("body.x : " + planeBody.getPosition().x);
             System.out.println("sprite.x : " + sprite.getX());
