@@ -69,7 +69,7 @@ public class EnemyPlaneSprite {
     public void weaponControl(){
         timer += Gdx.graphics.getDeltaTime();
         if(timer > 1.2){
-            enemyBullets.add(new EnemyBullet("largeEnemyBullet.png", renderer, w).setPosition(sprite.getX(), sprite.getY()));
+            enemyBullets.add(new EnemyBullet("jTracer.png", renderer, w).setPosition(sprite.getX(), sprite.getY()));
             timer -= 1.2;
         }
 

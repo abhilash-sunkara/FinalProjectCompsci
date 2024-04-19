@@ -51,9 +51,6 @@ public class Plane extends ApplicationAdapter {
 	public void render () {
 		ScreenUtils.clear(1, 1, 1, 1);
 		batch.begin();
-		planeSprite.update();
-		//planeSprite.update();
-		//enemyPlaneSprite.update();
 		backgroundOcean.updateAndRender(Gdx.graphics.getDeltaTime(),batch);
 		planeSprite.update();
 		boss.update();
