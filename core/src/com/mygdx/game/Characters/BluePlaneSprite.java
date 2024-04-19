@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+import com.mygdx.game.Projectiles.Bullet;
 
 import java.util.ArrayList;
 
@@ -34,7 +35,7 @@ public class BluePlaneSprite {
         planeBody.setLinearDamping(2.0f);
 
         CircleShape cs = new CircleShape();
-        cs.setRadius(32f);
+        cs.setRadius(6f);
         FixtureDef fd = new FixtureDef();
         fd.shape = cs;
         Fixture fixture = planeBody.createFixture(fd);
@@ -61,19 +62,19 @@ public class BluePlaneSprite {
 
     public void planeMovement(){
         if(Gdx.input.isKeyPressed(Input.Keys.RIGHT) && planeBody.getLinearVelocity().x < MAX_VEL){
-            planeBody.applyForceToCenter(1000.0f, 0f, true);
+            planeBody.applyForceToCenter(200.0f, 0f, true);
         }
         if(Gdx.input.isKeyPressed(Input.Keys.LEFT) && planeBody.getLinearVelocity().x > -MAX_VEL) {
-            planeBody.applyForceToCenter(-1000.0f, 0f, true);
+            planeBody.applyForceToCenter(-200.0f, 0f, true);
         }
         if(Gdx.input.isKeyPressed(Input.Keys.UP) && planeBody.getLinearVelocity().y < MAX_VEL) {
-            planeBody.applyForceToCenter(0f, 1000.0f, true);
+            planeBody.applyForceToCenter(0f, 200.0f, true);
         }
         if (Gdx.input.isKeyPressed(Input.Keys.DOWN) && planeBody.getLinearVelocity().y > -MAX_VEL){
-            planeBody.applyForceToCenter(0f, -1000.0f, true);
+            planeBody.applyForceToCenter(0f, -200.0f, true);
         }
-        //System.out.println(planeBody.getPosition().x);
-        sprite.setPosition(planeBody.getPosition().x, planeBody.getPosition().y);
+        //System.out.println(planeBody.getLinearVelocity().x);
+        sprite.setCenter(planeBody.getPosition().x, planeBody.getPosition().y);
     }
 
     public void weaponControl(){
@@ -83,6 +84,8 @@ public class BluePlaneSprite {
         if(Gdx.input.isKeyPressed(Input.Keys.SPACE) && canShoot){
             bulletManager.add(new Bullet("largeBullet.png", renderer, world).setPosition(sprite.getX() + 16, sprite.getY() + 40));
             canShoot = false;
+            System.out.println("body.x : " + planeBody.getPosition().x);
+            System.out.println("sprite.x : " + sprite.getX());
         }
         if(timeSeconds > weaponFireDelay){
             canShoot = true;

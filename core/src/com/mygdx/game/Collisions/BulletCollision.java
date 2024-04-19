@@ -4,8 +4,7 @@ import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Manifold;
-import com.mygdx.game.Characters.BluePlaneSprite;
-import com.mygdx.game.Characters.Bullet;
+import com.mygdx.game.Projectiles.Bullet;
 import com.mygdx.game.Characters.EnemyPlaneSprite;
 
 public class BulletCollision implements ContactListener {
@@ -14,6 +13,13 @@ public class BulletCollision implements ContactListener {
         if(contact.getFixtureA().getUserData().getClass() == EnemyPlaneSprite.class && contact.getFixtureB().getUserData().getClass() == Bullet.class){
             Bullet b = (Bullet) contact.getFixtureB().getUserData();
             b.destroy();
+            EnemyPlaneSprite es = (EnemyPlaneSprite) contact.getFixtureA().getUserData();
+            es.destroy();
+        } else if(contact.getFixtureB().getUserData().getClass() == EnemyPlaneSprite.class && contact.getFixtureA().getUserData().getClass() == Bullet.class){
+            Bullet b = (Bullet) contact.getFixtureA().getUserData();
+            b.destroy();
+            EnemyPlaneSprite es = (EnemyPlaneSprite) contact.getFixtureB().getUserData();
+            es.destroy();
         }
     }
 

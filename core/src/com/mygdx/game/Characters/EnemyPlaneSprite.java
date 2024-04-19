@@ -4,19 +4,30 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.mygdx.game.Collisions.BulletCollision;
+import com.mygdx.game.Projectiles.EnemyBullet;
+
+import java.util.ArrayList;
 
 public class EnemyPlaneSprite {
 
     private Sprite sprite;
     private SpriteBatch renderer;
-    private int directionModifier = 1;
     private BodyDef bd = new BodyDef();
+    private World w;
 
     private Body body;
 
-    private float MAX_VEL = 1000f;
+    private float MAX_VEL = 20f;
+
+    private float timer = 0f;
+    private ArrayList<EnemyBullet> enemyBullets = new ArrayList<>();
+
+    public boolean isActive = true;
+
+    private Fixture f;
 
     public EnemyPlaneSprite(String imgFile, SpriteBatch batch, World world){
         sprite = new Sprite(new Texture(Gdx.files.internal(imgFile)));
@@ -26,53 +37,62 @@ public class EnemyPlaneSprite {
 
         bd.type = BodyDef.BodyType.KinematicBody;
         body = world.createBody(bd);
-        body.setTransform(0, 300, 0);
+        body.setTransform(0, 400, 0);
+        w= world;
 
         CircleShape cs = new CircleShape();
         cs.setRadius(6f);
         FixtureDef fd = new FixtureDef();
+        fd.filter.categoryBits = 0x0002;
+        fd.filter.maskBits = 0x0001;
         fd.shape = cs;
         Fixture fixture = body.createFixture(fd);
         fixture.setUserData(this);
-        //System.out.println("Enemy fixture : " + fixture);
+
+        f = fixture;
 
         world.setContactListener(new BulletCollision());
     }
 
-    /*
     public void enemyMovement(){
-        sprite.translateX(2 * directionModifier);
-        if(sprite.getX() > 600){
-            directionModifier *= -1;
-        } else if (sprite.getX() < 0){
-            directionModifier *= -1;
-        }
-    }
-    */
-
-
-    public void enemyMovement(){
-        body.setLinearVelocity(MAX_VEL * directionModifier, 0);
-        if(body.getPosition().x > 600 && MAX_VEL > 0){
-            MAX_VEL *= -1;
-        } else if(body.getPosition().x < 0 && MAX_VEL < 0){
-            MAX_VEL *= -1;
-        }
+        body.setLinearVelocity(0, -MAX_VEL);
         sprite.setPosition(body.getPosition().x, body.getPosition().y);
     }
 
-
-
-    /*
-    public void bulletCollision(){
-        if(sprite.getBoundingRectangle().overlaps())
+    public EnemyPlaneSprite setStartPos(float x, float y){
+        body.setTransform(new Vector2(x, y), 0);
+        sprite.setPosition(x, y);
+        return this;
     }
-    */
 
+    public void weaponControl(){
+        timer += Gdx.graphics.getDeltaTime();
+        if(timer > 1.2){
+            enemyBullets.add(new EnemyBullet("largeEnemyBullet.png", renderer, w).setPosition(sprite.getX(), sprite.getY()));
+            timer -= 1.2;
+        }
+
+        for(int i = 0; i < enemyBullets.size(); i++){
+            if(!enemyBullets.get(i).isActive){
+                enemyBullets.remove(i);
+                i--;
+            } else{
+                enemyBullets.get(i).update();
+            }
+        }
+    }
+
+    public void destroy(){
+        isActive = false;
+        f.setSensor(true);
+    }
 
     public void update(){
-        enemyMovement();
-        sprite.draw(renderer);
+        if(isActive){
+            enemyMovement();
+            weaponControl();
+            sprite.draw(renderer);
+        }
     }
 
 }
