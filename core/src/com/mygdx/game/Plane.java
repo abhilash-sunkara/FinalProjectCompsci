@@ -11,7 +11,6 @@ import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.mygdx.game.Background.MovingBackgroundOcean;
-import com.mygdx.game.Characters.BluePlane;
 import com.mygdx.game.Characters.BluePlaneSprite;
 import com.mygdx.game.Managers.EnemyManager;
 
@@ -42,8 +41,7 @@ public class Plane extends ApplicationAdapter {
 		debugRenderer = new Box2DDebugRenderer();
 		//planeSprite = new BluePlaneSprite(bluePlaneImg, batch);
 		//enemyPlaneSprite = new EnemyPlaneSprite(enemyPlaneImg, batch);
-		boss = new EnemyManager(batch);
-		boss.create();
+		boss = new EnemyManager(batch, world);
 		//player.create(bluePlaneImg);
 
 		backgroundOcean = new MovingBackgroundOcean();
