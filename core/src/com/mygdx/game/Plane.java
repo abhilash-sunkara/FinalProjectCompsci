@@ -55,6 +55,7 @@ public class Plane extends ApplicationAdapter {
 		//planeSprite.update();
 		//enemyPlaneSprite.update();
 		backgroundOcean.updateAndRender(Gdx.graphics.getDeltaTime(),batch);
+		planeSprite.update();
 		boss.update();
 		world.step(1/60f, 6, 2);
 		world.step(1/60f, 6, 2);

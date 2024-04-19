@@ -44,7 +44,8 @@ public class EnemyPlaneSprite {
         cs.setRadius(6f);
         FixtureDef fd = new FixtureDef();
         fd.filter.categoryBits = 0x0002;
-        fd.filter.maskBits = 0x0001;
+        fd.filter.maskBits = 0x0003;
+        fd.filter.groupIndex = -1;
         fd.shape = cs;
         Fixture fixture = body.createFixture(fd);
         fixture.setUserData(this);
