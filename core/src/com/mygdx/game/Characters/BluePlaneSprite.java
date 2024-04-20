@@ -24,8 +24,10 @@ public class BluePlaneSprite {
     private final float MAX_VEL = 1000f;
     private World world;
 
+    private ArrayList<Body> bodyRemover;
 
-    public BluePlaneSprite(String imgFile, SpriteBatch batch, World world){
+
+    public BluePlaneSprite(String imgFile, SpriteBatch batch, World world, ArrayList<Body> ar){
         sprite = new Sprite(new Texture(Gdx.files.internal(imgFile)));
         renderer = batch;
         bf.type = BodyType.DynamicBody;
@@ -37,12 +39,15 @@ public class BluePlaneSprite {
         CircleShape cs = new CircleShape();
         cs.setRadius(6f);
         FixtureDef fd = new FixtureDef();
-        fd.filter.categoryBits = 0x0002;
-        fd.filter.maskBits = 0x0001;
+        fd.filter.categoryBits = 0x0003;
+        fd.filter.maskBits = 0x0002;
+        fd.filter.groupIndex = -1;
         fd.shape = cs;
         Fixture fixture = planeBody.createFixture(fd);
         fixture.setUserData(this);
         System.out.println(fixture);
+
+        bodyRemover = ar;
     }
 
     /*
@@ -96,6 +101,7 @@ public class BluePlaneSprite {
 
         for(int i = 0; i < bulletManager.size(); i++){
             if(!bulletManager.get(i).isActive){
+                bodyRemover.add(bulletManager.get(i).body);
                 bulletManager.remove(i);
                 i--;
             } else{

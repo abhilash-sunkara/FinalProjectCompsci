@@ -7,12 +7,15 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.mygdx.game.Background.MovingBackgroundOcean;
 import com.mygdx.game.Characters.BluePlaneSprite;
 import com.mygdx.game.Managers.EnemyManager;
+
+import java.util.ArrayList;
 
 public class Plane extends ApplicationAdapter {
 	SpriteBatch batch;
@@ -21,11 +24,13 @@ public class Plane extends ApplicationAdapter {
 
 	//private BluePlane player = new BluePlane();
 	String bluePlaneImg = "ship_0000.png";
-	String enemyPlaneImg = "ship_0001.png";
 	BluePlaneSprite planeSprite;
 	World world;
 	EnemyManager boss;
 	Box2DDebugRenderer debugRenderer;
+
+	ArrayList<Body> bodyRemover = new ArrayList<>();
+	ArrayList<Body> removedBodies = new ArrayList<>();
 
 	MovingBackgroundOcean backgroundOcean;
 
@@ -36,12 +41,12 @@ public class Plane extends ApplicationAdapter {
 		batch = new SpriteBatch();
 		world = new World(new Vector2(0, 0), true);
 
-		planeSprite = new BluePlaneSprite(bluePlaneImg, batch, world);
-		boss = new EnemyManager(batch, world);
+		planeSprite = new BluePlaneSprite(bluePlaneImg, batch, world, bodyRemover);
+		boss = new EnemyManager(batch, world, bodyRemover);
 		debugRenderer = new Box2DDebugRenderer();
 		//planeSprite = new BluePlaneSprite(bluePlaneImg, batch);
 		//enemyPlaneSprite = new EnemyPlaneSprite(enemyPlaneImg, batch);
-		boss = new EnemyManager(batch, world);
+		//boss = new EnemyManager(batch, world);
 		//player.create(bluePlaneImg);
 
 		backgroundOcean = new MovingBackgroundOcean();
@@ -59,8 +64,20 @@ public class Plane extends ApplicationAdapter {
 		world.step(1/60f, 6, 2);
 		world.step(1/60f, 6, 2);
 		world.step(1/60f, 6, 2);
-		//debugRenderer.render(world, camera.combined);
+		removeAllInactive();
+		debugRenderer.render(world, camera.combined);
+
 		batch.end();
+
+	}
+
+	public void removeAllInactive(){
+		for(Body b : bodyRemover){
+			if(!removedBodies.contains(b)) {
+				world.destroyBody(b);
+				removedBodies.add(b);
+			}
+		}
 	}
 	
 	@Override
