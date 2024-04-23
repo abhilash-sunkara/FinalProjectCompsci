@@ -43,7 +43,7 @@ public class EnemyBullet {
 
     public void bulletMovement(){
         body.setLinearVelocity(0, -80);
-        sprite.setPosition(body.getPosition().x, body.getPosition().y);
+        sprite.setPosition(body.getPosition().x - 36, body.getPosition().y);
     }
 
     public void update(){
@@ -61,6 +61,7 @@ public class EnemyBullet {
 
     public void destroy(){
         isActive = false;
+        System.out.println("destroyed bullet");
         f.setSensor(true);
     }
 

@@ -7,6 +7,7 @@ import com.badlogic.gdx.physics.box2d.Manifold;
 import com.mygdx.game.Characters.BluePlaneSprite;
 import com.mygdx.game.Projectiles.Bullet;
 import com.mygdx.game.Characters.EnemyPlaneSprite;
+import com.mygdx.game.Projectiles.EnemyBullet;
 
 public class BulletCollision implements ContactListener {
     @Override
@@ -39,6 +40,20 @@ public class BulletCollision implements ContactListener {
                 player.resetToggle();
             }
             enemy.destroy();
+        } else if(contact.getFixtureA().getUserData().getClass() == BluePlaneSprite.class && contact.getFixtureB().getUserData().getClass() == EnemyBullet.class) {
+            BluePlaneSprite player = (BluePlaneSprite) contact.getFixtureA().getUserData();
+            EnemyBullet enemyBullet = (EnemyBullet) contact.getFixtureB().getUserData();
+            if (enemyBullet.isActive) {
+                player.resetToggle();
+            }
+            enemyBullet.destroy();
+        } else if(contact.getFixtureB().getUserData().getClass() == BluePlaneSprite.class && contact.getFixtureA().getUserData().getClass() == EnemyBullet.class) {
+            BluePlaneSprite player = (BluePlaneSprite) contact.getFixtureB().getUserData();
+            EnemyBullet enemyBullet = (EnemyBullet) contact.getFixtureA().getUserData();
+            if (enemyBullet.isActive) {
+                player.resetToggle();
+            }
+            enemyBullet.destroy();
         }
 
         /*

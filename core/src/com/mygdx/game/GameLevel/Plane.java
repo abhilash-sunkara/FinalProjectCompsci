@@ -97,6 +97,7 @@ public class Plane extends Game {
 	@Override
 	public void dispose () {
 		batch.dispose();
+
 	}
 
 
