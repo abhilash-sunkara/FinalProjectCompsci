@@ -7,7 +7,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
-import com.mygdx.game.Plane;
+import com.mygdx.game.GameLevel.Plane;
 import com.mygdx.game.Projectiles.Bullet;
 
 import java.util.ArrayList;

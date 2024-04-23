@@ -1,6 +1,6 @@
-package com.mygdx.game;
+package com.mygdx.game.GameLevel;
 
-import com.badlogic.gdx.ApplicationAdapter;
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -9,16 +9,16 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.ScreenUtils;
-import com.mygdx.game.Background.MovingBackgroundOcean;
 import com.mygdx.game.Characters.BluePlaneSprite;
 import com.mygdx.game.Collisions.BulletCollision;
+import com.mygdx.game.Background.MovingBackgroundOcean;
 import com.mygdx.game.Managers.EnemyManager;
 import com.mygdx.game.Managers.UserInterfaceManager;
 
 import java.util.ArrayList;
 
-public class Plane extends ApplicationAdapter {
-	SpriteBatch batch;
+public class Plane extends Game {
+	public SpriteBatch batch;
 
 	OrthographicCamera camera;
 
@@ -57,9 +57,11 @@ public class Plane extends ApplicationAdapter {
 
 		world.setContactListener(new BulletCollision());
 
+
+
 	}
 
-	@Override
+
 	public void render () {
 		ScreenUtils.clear(1, 1, 1, 1);
 		batch.begin();
@@ -96,4 +98,6 @@ public class Plane extends ApplicationAdapter {
 	public void dispose () {
 		batch.dispose();
 	}
+
+
 }
