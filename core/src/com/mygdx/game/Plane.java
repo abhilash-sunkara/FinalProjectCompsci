@@ -2,9 +2,7 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -13,7 +11,9 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.mygdx.game.Background.MovingBackgroundOcean;
 import com.mygdx.game.Characters.BluePlaneSprite;
+import com.mygdx.game.Collisions.BulletCollision;
 import com.mygdx.game.Managers.EnemyManager;
+import com.mygdx.game.Managers.UserInterfaceManager;
 
 import java.util.ArrayList;
 
@@ -27,12 +27,15 @@ public class Plane extends ApplicationAdapter {
 	BluePlaneSprite planeSprite;
 	World world;
 	EnemyManager boss;
+	UserInterfaceManager ui;
 	Box2DDebugRenderer debugRenderer;
 
 	ArrayList<Body> bodyRemover = new ArrayList<>();
 	ArrayList<Body> removedBodies = new ArrayList<>();
 
 	MovingBackgroundOcean backgroundOcean;
+
+	public static boolean isAbleToReset = false;
 
 	@Override
 	public void create () {
@@ -43,6 +46,7 @@ public class Plane extends ApplicationAdapter {
 
 		planeSprite = new BluePlaneSprite(bluePlaneImg, batch, world, bodyRemover);
 		boss = new EnemyManager(batch, world, bodyRemover);
+		ui = new UserInterfaceManager(batch);
 		debugRenderer = new Box2DDebugRenderer();
 		//planeSprite = new BluePlaneSprite(bluePlaneImg, batch);
 		//enemyPlaneSprite = new EnemyPlaneSprite(enemyPlaneImg, batch);
@@ -50,6 +54,9 @@ public class Plane extends ApplicationAdapter {
 		//player.create(bluePlaneImg);
 
 		backgroundOcean = new MovingBackgroundOcean();
+
+		world.setContactListener(new BulletCollision());
+
 	}
 
 	@Override
@@ -59,17 +66,22 @@ public class Plane extends ApplicationAdapter {
 		backgroundOcean.updateAndRender(Gdx.graphics.getDeltaTime(),batch);
 		planeSprite.update();
 		boss.update();
+		ui.render();
+		isAbleToReset = false;
 		world.step(1/60f, 6, 2);
 		world.step(1/60f, 6, 2);
 		world.step(1/60f, 6, 2);
 		world.step(1/60f, 6, 2);
 		world.step(1/60f, 6, 2);
+		isAbleToReset = true;
 		removeAllInactive();
-		debugRenderer.render(world, camera.combined);
+		//debugRenderer.render(world, camera.combined);
 
 		batch.end();
 
 	}
+
+
 
 	public void removeAllInactive(){
 		for(Body b : bodyRemover){

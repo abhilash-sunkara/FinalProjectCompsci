@@ -54,7 +54,7 @@ public class EnemyPlaneSprite {
 
         f = fixture;
 
-        world.setContactListener(new BulletCollision());
+
         bodyRemover = ar;
     }
 
