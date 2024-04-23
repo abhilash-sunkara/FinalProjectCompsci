@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.utils.Timer;
 import com.mygdx.game.Collisions.BulletCollision;
 import com.mygdx.game.Projectiles.EnemyBullet;
 
@@ -23,6 +24,7 @@ public class EnemyPlaneSprite {
     private float MAX_VEL = 20f;
 
     private float timer = 0f;
+    private float bulletTimer = 0f;
     private ArrayList<EnemyBullet> enemyBullets = new ArrayList<>();
 
     private ArrayList<Body> bodyRemover;
@@ -70,10 +72,34 @@ public class EnemyPlaneSprite {
     }
 
     public void weaponControl(){
+        boolean canShoot = false;
         timer += Gdx.graphics.getDeltaTime();
         if(timer > 1.2){
-            enemyBullets.add(new EnemyBullet("jTracer.png", renderer, w).setPosition(sprite.getX(), sprite.getY() - 160));
-            timer -= 1.2;
+            /*
+            enemyBullets.add(new EnemyBullet("jTracer.png", renderer, w).setPosition(sprite.getX(), sprite.getY()));
+
+            bulletTimer += Gdx.graphics.getDeltaTime();
+            for(int i = 0; i < 5; i++){
+                if(bulletTimer > 0.5){
+                    enemyBullets.add(new EnemyBullet("jTracer.png", renderer, w).setPosition(sprite.getX(), sprite.getY()));
+                }
+            }
+            timer = 0;
+            */
+
+            canShoot = true;
+            timer = 0;
+
+        }
+
+        if(canShoot){
+            Timer.schedule(new Timer.Task(){
+                public void run(){
+                    enemyBullets.add(new EnemyBullet("jTracer.png", renderer, w).setPosition(sprite.getX(), sprite.getY()));
+                }
+            }, 0.75f);
+            canShoot = false;
+
         }
 
         for(int i = 0; i < enemyBullets.size(); i++){

@@ -18,7 +18,7 @@ public class EnemyBullet {
 
     public EnemyBullet(String imgFile, SpriteBatch spriteBatch, World world){
         sprite = new Sprite(new Texture(Gdx.files.internal(imgFile)));
-        sprite.setScale(0.0625f);
+        sprite.setScale(0.046875f);
         renderer = spriteBatch;
         bd.type = BodyDef.BodyType.DynamicBody;
         this.world = world;
