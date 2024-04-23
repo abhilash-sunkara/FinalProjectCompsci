@@ -12,15 +12,29 @@ public class BulletCollision implements ContactListener {
     public void beginContact(Contact contact) {
         if(contact.getFixtureA().getUserData().getClass() == EnemyPlaneSprite.class && contact.getFixtureB().getUserData().getClass() == Bullet.class){
             Bullet b = (Bullet) contact.getFixtureB().getUserData();
+            if(b.isActive){
+                EnemyPlaneSprite es = (EnemyPlaneSprite) contact.getFixtureA().getUserData();
+                es.destroy();
+            }
             b.destroy();
-            EnemyPlaneSprite es = (EnemyPlaneSprite) contact.getFixtureA().getUserData();
-            es.destroy();
         } else if(contact.getFixtureB().getUserData().getClass() == EnemyPlaneSprite.class && contact.getFixtureA().getUserData().getClass() == Bullet.class){
             Bullet b = (Bullet) contact.getFixtureA().getUserData();
+            if(b.isActive){
+                EnemyPlaneSprite es = (EnemyPlaneSprite) contact.getFixtureB().getUserData();
+                es.destroy();
+            }
             b.destroy();
-            EnemyPlaneSprite es = (EnemyPlaneSprite) contact.getFixtureB().getUserData();
-            es.destroy();
         }
+
+        /*
+        System.out.println("I am a " + contact.getFixtureA().getFilterData().categoryBits);
+        System.out.println("I should be getting by " + contact.getFixtureA().getFilterData().maskBits);
+        System.out.println("My class is " + contact.getFixtureA().getUserData());
+        System.out.println("Got hit by " + contact.getFixtureB().getFilterData().categoryBits);
+        System.out.println("Which should be hitting " + contact.getFixtureB().getFilterData().maskBits);
+        System.out.println("My class is " + contact.getFixtureB().getUserData());
+        */
+
     }
 
     @Override

@@ -29,6 +29,9 @@ public class Bullet {
         CircleShape cs = new CircleShape();
         cs.setRadius(6f);
         FixtureDef fd = new FixtureDef();
+        fd.filter.categoryBits = 0x0003;
+        fd.filter.maskBits = 0x0002;
+        //fd.filter.groupIndex = -1;
         fd.shape = cs;
         Fixture fixture = body.createFixture(fd);
         fixture.setUserData(this);
@@ -37,7 +40,7 @@ public class Bullet {
 
     public void bulletMovement(){
         body.setLinearVelocity(0f, 1000f);
-        if(sprite.getY() > 500){
+        if(sprite.getY() > 5000){
             isActive = false;
         }
         sprite.setPosition(body.getPosition().x, body.getPosition().y);

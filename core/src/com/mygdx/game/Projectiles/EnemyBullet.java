@@ -22,17 +22,23 @@ public class EnemyBullet {
         renderer = spriteBatch;
         bd.type = BodyDef.BodyType.DynamicBody;
         this.world = world;
+
         body = world.createBody(bd);
-        body.setUserData(sprite);
         body.setLinearDamping(2.0f);
+        body.setUserData(sprite);
 
         CircleShape cs = new CircleShape();
         cs.setRadius(6f);
         FixtureDef fd = new FixtureDef();
         fd.shape = cs;
+        //fd.filter.categoryBits = 0x0001;
+        //fd.filter.maskBits = 0x0002;
+        fd.filter.groupIndex = -1;
         Fixture fixture = body.createFixture(fd);
         fixture.setUserData(this);
         f = fixture;
+
+
     }
 
     public void bulletMovement(){
