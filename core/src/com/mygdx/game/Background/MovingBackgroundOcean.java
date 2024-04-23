@@ -17,7 +17,7 @@ public class MovingBackgroundOcean {
 
 
 
-    public MovingBackgroundOcean(){
+    public MovingBackgroundOcean() {
         image = new Texture("OceanBackground.jpeg");
 
         y1 = 0;

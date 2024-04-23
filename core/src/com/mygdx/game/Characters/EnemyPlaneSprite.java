@@ -19,7 +19,7 @@ public class EnemyPlaneSprite {
     private BodyDef bd = new BodyDef();
     private World w;
 
-    private Body body;
+    public Body body;
 
     private float MAX_VEL = 20f;
 
@@ -27,11 +27,13 @@ public class EnemyPlaneSprite {
     private float bulletTimer = 0f;
     private ArrayList<EnemyBullet> enemyBullets = new ArrayList<>();
 
+    private ArrayList<Body> bodyRemover;
+
     public boolean isActive = true;
 
     private Fixture f;
 
-    public EnemyPlaneSprite(String imgFile, SpriteBatch batch, World world){
+    public EnemyPlaneSprite(String imgFile, SpriteBatch batch, World world, ArrayList<Body> ar){
         sprite = new Sprite(new Texture(Gdx.files.internal(imgFile)));
         renderer = batch;
         sprite.setFlip(false, true);
@@ -43,18 +45,19 @@ public class EnemyPlaneSprite {
         w= world;
 
         CircleShape cs = new CircleShape();
-        cs.setRadius(6f);
+        cs.setRadius(16f);
         FixtureDef fd = new FixtureDef();
         fd.filter.categoryBits = 0x0002;
         fd.filter.maskBits = 0x0003;
-        fd.filter.groupIndex = -1;
+        fd.filter.groupIndex = -2;
         fd.shape = cs;
         Fixture fixture = body.createFixture(fd);
         fixture.setUserData(this);
 
         f = fixture;
 
-        world.setContactListener(new BulletCollision());
+
+        bodyRemover = ar;
     }
 
     public void enemyMovement(){
