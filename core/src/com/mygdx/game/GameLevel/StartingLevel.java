@@ -1,8 +1,8 @@
 package com.mygdx.game.GameLevel;
 
 import com.badlogic.gdx.*;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.audio.*;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -26,6 +26,8 @@ public class StartingLevel extends Plane {
     private BitmapFont font;
 
     private boolean renderPlane;
+
+    private Music propBgMusic;
 
     @Override
     public void create() {
@@ -72,8 +74,9 @@ public class StartingLevel extends Plane {
             public boolean keyDown(int keyCode) {
                 if (keyCode == Input.Keys.ENTER) {
                     renderPlane = true;
-                    //System.out.println("Working");
-
+                    propBgMusic = Gdx.audio.newMusic(Gdx.files.internal("prop.mp3"));
+		            propBgMusic.setLooping(true);
+		            propBgMusic.play();
                 }
                 return true;
             }
