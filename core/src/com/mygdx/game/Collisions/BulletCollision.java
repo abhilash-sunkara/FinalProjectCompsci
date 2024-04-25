@@ -43,17 +43,19 @@ public class BulletCollision implements ContactListener {
         } else if(contact.getFixtureA().getUserData().getClass() == BluePlaneSprite.class && contact.getFixtureB().getUserData().getClass() == EnemyBullet.class) {
             BluePlaneSprite player = (BluePlaneSprite) contact.getFixtureA().getUserData();
             EnemyBullet enemyBullet = (EnemyBullet) contact.getFixtureB().getUserData();
-            if (enemyBullet.isActive) {
+            if (enemyBullet.isActive && enemyBullet.getVelocity() < 0f) {
                 player.resetToggle();
             }
             enemyBullet.destroy();
+            //System.out.println("hit enemy bullet");
         } else if(contact.getFixtureB().getUserData().getClass() == BluePlaneSprite.class && contact.getFixtureA().getUserData().getClass() == EnemyBullet.class) {
             BluePlaneSprite player = (BluePlaneSprite) contact.getFixtureB().getUserData();
             EnemyBullet enemyBullet = (EnemyBullet) contact.getFixtureA().getUserData();
-            if (enemyBullet.isActive) {
+            if (enemyBullet.isActive && enemyBullet.getVelocity() < 0f) {
                 player.resetToggle();
             }
             enemyBullet.destroy();
+            //System.out.println("hit enemy bullet");
         }
 
         /*

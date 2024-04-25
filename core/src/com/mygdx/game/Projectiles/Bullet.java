@@ -36,6 +36,8 @@ public class Bullet {
         Fixture fixture = body.createFixture(fd);
         fixture.setUserData(this);
         f=fixture;
+
+        //System.out.println("created");
     }
 
     public void bulletMovement(){
@@ -48,6 +50,7 @@ public class Bullet {
 
     public void update(){
         if(isActive){
+            //System.out.println("bullet updating : " + body.getPosition().y);
             bulletMovement();
             sprite.draw(renderer);
         }

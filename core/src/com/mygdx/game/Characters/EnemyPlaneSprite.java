@@ -115,6 +115,13 @@ public class EnemyPlaneSprite {
     public void destroy(){
         isActive = false;
         f.setSensor(true);
+
+        for(EnemyBullet eb : enemyBullets){
+            eb.destroy();
+            System.out.println("ran destroy");
+            bodyRemover.add(eb.body);
+        }
+
     }
 
     public void update(){

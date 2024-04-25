@@ -13,7 +13,7 @@ public class EnemyBullet {
     public boolean isActive = true;
     private BodyDef bd = new BodyDef();
     private World world;
-    private Body body;
+    public Body body;
     private Fixture f;
 
     public EnemyBullet(String imgFile, SpriteBatch spriteBatch, World world){
@@ -61,8 +61,12 @@ public class EnemyBullet {
 
     public void destroy(){
         isActive = false;
-        System.out.println("destroyed bullet");
+        //System.out.println("destroyed bullet");
         f.setSensor(true);
+    }
+
+    public float getVelocity(){
+        return body.getLinearVelocity().y;
     }
 
 

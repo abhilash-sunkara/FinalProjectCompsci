@@ -5,9 +5,11 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.mygdx.game.GameLevel.Plane;
+import com.mygdx.game.Characters.WingManSprite;
 import com.mygdx.game.Projectiles.Bullet;
 
 import java.util.ArrayList;
@@ -30,6 +32,8 @@ public class BluePlaneSprite {
 
     private ArrayList<Body> bodyRemover;
 
+    public boolean isWingManActive = false;
+    WingManSprite wingman;
 
     public BluePlaneSprite(String imgFile, SpriteBatch batch, World world, ArrayList<Body> ar){
         sprite = new Sprite(new Texture(Gdx.files.internal(imgFile)));
@@ -39,6 +43,9 @@ public class BluePlaneSprite {
         planeBody = world.createBody(bf);
         planeBody.setUserData(sprite);
         planeBody.setLinearDamping(2.0f);
+        planeBody.setUserData(this);
+
+        //sprite.setScale(0.01f, 0.01f);
 
         CircleShape cs = new CircleShape();
         cs.setRadius(6f);
@@ -52,6 +59,8 @@ public class BluePlaneSprite {
         System.out.println(fixture);
 
         bodyRemover = ar;
+
+        wingman = new WingManSprite("ship_0008.png", batch, world, this);
     }
 
     /*
@@ -86,6 +95,7 @@ public class BluePlaneSprite {
         }
         //System.out.println(planeBody.getLinearVelocity().x);
         sprite.setCenter(planeBody.getPosition().x, planeBody.getPosition().y);
+
     }
 
     public void weaponControl(){
@@ -93,7 +103,8 @@ public class BluePlaneSprite {
         timeSeconds += Gdx.graphics.getDeltaTime();
 
         if(Gdx.input.isKeyPressed(Input.Keys.SPACE) && canShoot){
-            bulletManager.add(new Bullet("tracer.png", renderer, world).setPosition(sprite.getX() + 16, sprite.getY() + 40));
+            bulletManager.add(new Bullet("tracer.png", renderer, world).setPosition(sprite.getX(), sprite.getY()));
+            //System.out.println("bullet shot");
             canShoot = false;
             //System.out.println("body.x : " + planeBody.getPosition().x);
             //System.out.println("sprite.x : " + sprite.getX());
@@ -103,12 +114,15 @@ public class BluePlaneSprite {
             timeSeconds -= weaponFireDelay;
         }
 
+        //System.out.println(bulletManager.size());
+
         for(int i = 0; i < bulletManager.size(); i++){
             if(!bulletManager.get(i).isActive){
                 bodyRemover.add(bulletManager.get(i).body);
                 bulletManager.remove(i);
                 i--;
             } else{
+                //System.out.println("updating");
                 bulletManager.get(i).update();
             }
         }
@@ -118,16 +132,25 @@ public class BluePlaneSprite {
     public void update(){
         planeMovement();
         weaponControl();
+        if(isWingManActive){
+            wingman.update();
+        }
         sprite.draw(renderer);
         reset();
     }
 
     public void reset(){
-        if(shouldReset && Plane.isAbleToReset){
-            planeBody.setTransform(0, 0, 0f);
-            lives--;
+        if(!isWingManActive && shouldReset) {
+            if (Plane.isAbleToReset) {
+                planeBody.setTransform(0, 0, 0f);
+                lives--;
+                shouldReset = false;
+            }
+        } else if (shouldReset) {
+            isWingManActive = false;
             shouldReset = false;
         }
+
     }
 
     public void resetToggle(){
@@ -137,5 +160,16 @@ public class BluePlaneSprite {
     public Sprite getSprite(){
         return sprite;
     }
+
+    public void spawnWingman(){
+        isWingManActive = true;
+        wingman.activate();
+    }
+
+    public Vector2 getForce(){
+        return planeBody.getLinearVelocity();
+    }
+
+
 
 }

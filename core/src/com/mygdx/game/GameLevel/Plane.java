@@ -8,6 +8,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.mygdx.game.Characters.BluePlaneSprite;
 import com.mygdx.game.Collisions.BulletCollision;
@@ -33,6 +34,8 @@ public class Plane extends Game {
 	ArrayList<Body> bodyRemover = new ArrayList<>();
 	ArrayList<Body> removedBodies = new ArrayList<>();
 
+	Array<Body> removeNonMovingBodies = new Array<>();
+
 	MovingBackgroundOcean backgroundOcean;
 
 	public static boolean isAbleToReset = false;
@@ -56,8 +59,6 @@ public class Plane extends Game {
 		backgroundOcean = new MovingBackgroundOcean();
 
 		world.setContactListener(new BulletCollision());
-
-
 
 	}
 
@@ -92,12 +93,28 @@ public class Plane extends Game {
 				removedBodies.add(b);
 			}
 		}
+
+		world.getBodies(removeNonMovingBodies);
+
+		/*
+		for(Body b : removeNonMovingBodies){
+			if(b.getUserData() != null && b.getUserData().getClass() != BluePlaneSprite.class && b.getLinearVelocity().isZero() && !removedBodies.contains(b)){
+				world.destroyBody(b);
+				removedBodies.add(b);
+			} else if (b.getLinearVelocity().isZero() && b.getUserData() == null && !removedBodies.contains(b)){
+				world.destroyBody(b);
+				removedBodies.add(b);
+			}
+		}
+		*/
+
+
+
 	}
 	
 	@Override
 	public void dispose () {
 		batch.dispose();
-
 	}
 
 

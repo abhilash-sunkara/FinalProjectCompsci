@@ -4,10 +4,12 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeType.Bitmap;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
+import com.badlogic.gdx.utils.Array;
 import com.mygdx.game.Characters.BluePlaneSprite;
 
 public class UserInterfaceManager {
@@ -17,7 +19,16 @@ public class UserInterfaceManager {
 
     private int playerLives;
 
+    private Sprite playerLifeMeter;
+    private Array<Texture> playerLifeImages;
+
     public UserInterfaceManager(SpriteBatch sb){
+        batch = sb;
+        generateFont();
+        generatePlayerLifeImages();
+    }
+
+    public void generateFont(){
         FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("monogram.ttf"));
         FreeTypeFontParameter params = new FreeTypeFontParameter();
 
@@ -30,13 +41,28 @@ public class UserInterfaceManager {
         params.size = 60;
 
         font = generator.generateFont(params);
-        batch = sb;
 
         font.setColor(0, 0, 0, 1);
     }
 
+
+
+    public void generatePlayerLifeImages(){
+        for(int i = 0; i < 5; i++){
+            playerLifeImages.add(new Texture(Gdx.files.internal("PlayerLifeMeter" + i)));
+        }
+
+        playerLifeMeter = new Sprite(playerLifeImages.get(4));
+
+
+    }
+
     public void render(){
-        font.draw(batch, "plane lives : " + BluePlaneSprite.lives, 20, 440);
+
+    }
+
+    public void renderPlayerLives(){
+
     }
 
 

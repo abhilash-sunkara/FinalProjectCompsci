@@ -70,9 +70,9 @@ public class StartingLevel extends Plane {
         Gdx.input.setInputProcessor(new InputAdapter() {
             @Override
             public boolean keyDown(int keyCode) {
-                if (keyCode == Input.Keys.SPACE) {
+                if (keyCode == Input.Keys.ENTER) {
                     renderPlane = true;
-                    System.out.println("Working");
+                    //System.out.println("Working");
 
                 }
                 return true;
@@ -91,7 +91,7 @@ public class StartingLevel extends Plane {
         elapsed += Gdx.graphics.getDeltaTime();
         super.batch.begin();
         super.batch.draw(animation.getKeyFrame(elapsed),-500f,-200f);
-        font.draw(super.batch, "Press Space To Start", Gdx.graphics.getWidth() * .15f, Gdx.graphics.getHeight() * .75f);
+        font.draw(super.batch, "Press Enter To Start", Gdx.graphics.getWidth() * .15f, Gdx.graphics.getHeight() * .75f);
         super.batch.end();
 
 
