@@ -27,7 +27,7 @@ public class BluePlaneSprite {
     private final float MAX_VEL = 1000f;
     private World world;
 
-    public static int lives = 3;
+    public static int lives = 4;
     private boolean shouldReset = false;
 
     private ArrayList<Body> bodyRemover;
