@@ -20,7 +20,7 @@ public class UserInterfaceManager {
     private int playerLives;
 
     private Sprite playerLifeMeter;
-    private Array<Texture> playerLifeImages;
+    private Array<Texture> playerLifeImages = new Array<>();
 
     public UserInterfaceManager(SpriteBatch sb){
         batch = sb;
@@ -49,20 +49,27 @@ public class UserInterfaceManager {
 
     public void generatePlayerLifeImages(){
         for(int i = 0; i < 5; i++){
-            playerLifeImages.add(new Texture(Gdx.files.internal("PlayerLifeMeter" + i)));
+            playerLifeImages.add(new Texture(Gdx.files.internal("PlayerLifeMeter/PlayerLifeMeter" + i + ".png")));
         }
 
         playerLifeMeter = new Sprite(playerLifeImages.get(4));
-
+        playerLifeMeter.setScale(4, 4);
+        playerLifeMeter.setPosition(50, 12);
 
     }
 
     public void render(){
-
+        renderPlayerLives();
     }
 
     public void renderPlayerLives(){
-
+        System.out.println(playerLives);
+        System.out.println(BluePlaneSprite.lives);
+        if(playerLives != BluePlaneSprite.lives && BluePlaneSprite.lives >= 0){
+            playerLives = BluePlaneSprite.lives;
+            playerLifeMeter.setTexture(playerLifeImages.get(playerLives));
+        }
+        playerLifeMeter.draw(batch);
     }
 
 
