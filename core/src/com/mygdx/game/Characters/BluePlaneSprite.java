@@ -2,6 +2,7 @@ package com.mygdx.game.Characters;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -10,6 +11,8 @@ import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.mygdx.game.GameLevel.Plane;
 import com.mygdx.game.Projectiles.Bullet;
+import com.badlogic.gdx.audio.*;
+
 
 import java.util.ArrayList;
 
@@ -25,6 +28,7 @@ public class BluePlaneSprite {
     private Body planeBody;
     private final float MAX_VEL = 1000f;
     private World world;
+    private Music browningMusic;
 
     public static int lives = 4;
     private boolean shouldReset = false;
@@ -60,6 +64,7 @@ public class BluePlaneSprite {
         bodyRemover = ar;
 
         wingman = new WingManSprite("ship_0008.png", batch, world, this);
+        browningMusic = Gdx.audio.newMusic(Gdx.files.internal("browning.mp3"));
     }
 
     /*
@@ -107,7 +112,16 @@ public class BluePlaneSprite {
             canShoot = false;
             //System.out.println("body.x : " + planeBody.getPosition().x);
             //System.out.println("sprite.x : " + sprite.getX());
+            
         }
+
+        if(Gdx.input.isKeyPressed(Input.Keys.SPACE)){
+            browningMusic.setLooping(true);
+            browningMusic.play();
+        } else{
+            browningMusic.pause();
+        }
+
         if(timeSeconds > weaponFireDelay){
             canShoot = true;
             timeSeconds -= weaponFireDelay;
@@ -168,7 +182,4 @@ public class BluePlaneSprite {
     public Vector2 getPos(){
         return planeBody.getTransform().getPosition();
     }
-
-
-
 }
