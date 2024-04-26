@@ -64,7 +64,7 @@ public class Bullet {
 
     public void destroy(){
         isActive = false;
-        f.setSensor(true);
+        //f.setSensor(true);
     }
 
 }
