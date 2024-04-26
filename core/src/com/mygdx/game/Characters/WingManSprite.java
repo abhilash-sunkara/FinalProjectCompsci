@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
+import com.mygdx.game.GameLevel.Plane;
 import com.mygdx.game.Projectiles.Bullet;
 
 import java.util.ArrayList;
@@ -38,7 +39,7 @@ public class WingManSprite {
         bf.type = BodyDef.BodyType.DynamicBody;
         this.world = world;
         planeBody = world.createBody(bf);
-        planeBody.setUserData(sprite);
+        planeBody.setUserData(this);
         planeBody.setLinearDamping(2.0f);
         planeBody.setTransform(-16f, -16f, 0f);
 
@@ -57,20 +58,10 @@ public class WingManSprite {
     }
 
     public void planeMovement(){
-        if(Gdx.input.isKeyPressed(Input.Keys.RIGHT) && planeBody.getLinearVelocity().x < MAX_VEL){
-            planeBody.applyForceToCenter(400.0f, 0f, true);
+        if(Plane.isAbleToReset){
+            //System.out.println("ran pos control");
+            planeBody.setTransform(player.getPos().x - 16, player.getPos().y - 16, 0);
         }
-        if(Gdx.input.isKeyPressed(Input.Keys.LEFT) && planeBody.getLinearVelocity().x > -MAX_VEL) {
-            planeBody.applyForceToCenter(-400.0f, 0f, true);
-        }
-        if(Gdx.input.isKeyPressed(Input.Keys.UP) && planeBody.getLinearVelocity().y < MAX_VEL) {
-            planeBody.applyForceToCenter(0f, 400.0f, true);
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.DOWN) && planeBody.getLinearVelocity().y > -MAX_VEL){
-            planeBody.applyForceToCenter(0f, -400.0f, true);
-        }
-        System.out.println(planeBody.getTransform().getPosition().x);
-        System.out.println(planeBody.getTransform().getPosition().y);
         sprite.setCenter(planeBody.getPosition().x, planeBody.getPosition().y);
     }
 

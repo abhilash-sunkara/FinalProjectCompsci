@@ -118,7 +118,6 @@ public class EnemyPlaneSprite {
 
         for(EnemyBullet eb : enemyBullets){
             eb.destroy();
-            System.out.println("ran destroy");
             bodyRemover.add(eb.body);
         }
 

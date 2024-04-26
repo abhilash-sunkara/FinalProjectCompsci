@@ -9,7 +9,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.mygdx.game.GameLevel.Plane;
-import com.mygdx.game.Characters.WingManSprite;
 import com.mygdx.game.Projectiles.Bullet;
 
 import java.util.ArrayList;
@@ -166,8 +165,8 @@ public class BluePlaneSprite {
         wingman.activate();
     }
 
-    public Vector2 getForce(){
-        return planeBody.getLinearVelocity();
+    public Vector2 getPos(){
+        return planeBody.getTransform().getPosition();
     }
 
 

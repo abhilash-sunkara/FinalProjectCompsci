@@ -1,10 +1,12 @@
 package com.mygdx.game.Collisions;
 
+import com.badlogic.gdx.ai.steer.behaviors.BlendedSteering;
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Manifold;
 import com.mygdx.game.Characters.BluePlaneSprite;
+import com.mygdx.game.PowerUps.WingMan;
 import com.mygdx.game.Projectiles.Bullet;
 import com.mygdx.game.Characters.EnemyPlaneSprite;
 import com.mygdx.game.Projectiles.EnemyBullet;
@@ -56,7 +58,25 @@ public class BulletCollision implements ContactListener {
             }
             enemyBullet.destroy();
             //System.out.println("hit enemy bullet");
+        } else if(contact.getFixtureA().getUserData().getClass() == BluePlaneSprite.class && contact.getFixtureB().getUserData().getClass() == WingMan.class){
+            BluePlaneSprite player = (BluePlaneSprite) contact.getFixtureA().getUserData();
+            WingMan wing = (WingMan) contact.getFixtureB().getUserData();
+            if(wing.isActive){
+                System.out.println("spawn wingman");
+                player.spawnWingman();
+            }
+            wing.destroy();
+
+        } else if(contact.getFixtureB().getUserData().getClass() == BluePlaneSprite.class && contact.getFixtureA().getUserData().getClass() == WingMan.class){
+            BluePlaneSprite player = (BluePlaneSprite) contact.getFixtureB().getUserData();
+            WingMan wing = (WingMan) contact.getFixtureB().getUserData();
+            if(wing.isActive){
+                System.out.println("spawn wingman");
+                player.spawnWingman();
+            }
+            wing.destroy();
         }
+
 
         /*
         System.out.println("I am a " + contact.getFixtureA().getFilterData().categoryBits);

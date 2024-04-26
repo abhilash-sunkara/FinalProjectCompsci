@@ -11,9 +11,11 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.mygdx.game.Characters.BluePlaneSprite;
+import com.mygdx.game.Characters.WingManSprite;
 import com.mygdx.game.Collisions.BulletCollision;
 import com.mygdx.game.Background.MovingBackgroundOcean;
 import com.mygdx.game.Managers.EnemyManager;
+import com.mygdx.game.Managers.PowerUpManager;
 import com.mygdx.game.Managers.UserInterfaceManager;
 
 import java.util.ArrayList;
@@ -29,6 +31,7 @@ public class Plane extends Game {
 	World world;
 	EnemyManager boss;
 	UserInterfaceManager ui;
+	PowerUpManager powerUps;
 	Box2DDebugRenderer debugRenderer;
 
 	ArrayList<Body> bodyRemover = new ArrayList<>();
@@ -50,6 +53,8 @@ public class Plane extends Game {
 		planeSprite = new BluePlaneSprite(bluePlaneImg, batch, world, bodyRemover);
 		boss = new EnemyManager(batch, world, bodyRemover);
 		ui = new UserInterfaceManager(batch);
+		powerUps = new PowerUpManager(batch, world);
+
 		debugRenderer = new Box2DDebugRenderer();
 		//planeSprite = new BluePlaneSprite(bluePlaneImg, batch);
 		//enemyPlaneSprite = new EnemyPlaneSprite(enemyPlaneImg, batch);
@@ -70,6 +75,7 @@ public class Plane extends Game {
 		planeSprite.update();
 		boss.update();
 		ui.render();
+		powerUps.update();
 		isAbleToReset = false;
 		world.step(1/60f, 6, 2);
 		world.step(1/60f, 6, 2);
@@ -87,6 +93,18 @@ public class Plane extends Game {
 
 
 	public void removeAllInactive(){
+		world.getBodies(removeNonMovingBodies);
+		for(Body b : removeNonMovingBodies){
+			if(b.getUserData() != null && (b.getUserData().getClass() != BluePlaneSprite.class && b.getUserData().getClass() != WingManSprite.class) && b.getLinearVelocity().isZero()){
+				System.out.println("running main: " + b.getUserData());
+				world.destroyBody(b);
+				removedBodies.add(b);
+			} else if (b.getLinearVelocity().isZero() && b.getUserData() == null){
+				System.out.println("running alternate : " + b.getUserData());
+				world.destroyBody(b);
+				removedBodies.add(b);
+			}
+		}
 		for(Body b : bodyRemover){
 			if(!removedBodies.contains(b)) {
 				world.destroyBody(b);
@@ -94,19 +112,11 @@ public class Plane extends Game {
 			}
 		}
 
-		world.getBodies(removeNonMovingBodies);
 
-		/*
-		for(Body b : removeNonMovingBodies){
-			if(b.getUserData() != null && b.getUserData().getClass() != BluePlaneSprite.class && b.getLinearVelocity().isZero() && !removedBodies.contains(b)){
-				world.destroyBody(b);
-				removedBodies.add(b);
-			} else if (b.getLinearVelocity().isZero() && b.getUserData() == null && !removedBodies.contains(b)){
-				world.destroyBody(b);
-				removedBodies.add(b);
-			}
-		}
-		*/
+
+
+
+
 
 
 
