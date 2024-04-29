@@ -11,20 +11,26 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFont
 import com.badlogic.gdx.utils.Array;
 import com.mygdx.game.Characters.BluePlaneSprite;
 
+import java.util.ArrayList;
+
 public class UserInterfaceManager {
 
     private SpriteBatch batch;
     BitmapFont font;
 
     private int playerLives;
-
     private Sprite playerLifeMeter;
     private Array<Texture> playerLifeImages = new Array<>();
+
+    private int escapedEnemies;
+    private Sprite enemyCounter;
+    private Array<Texture> enemyCounterImages = new Array<>();
 
     public UserInterfaceManager(SpriteBatch sb){
         batch = sb;
         generateFont();
         generatePlayerLifeImages();
+        generateEnemyCounterImages();
     }
 
     public void generateFont(){
@@ -54,21 +60,42 @@ public class UserInterfaceManager {
         playerLifeMeter = new Sprite(playerLifeImages.get(4));
         playerLifeMeter.setScale(4, 4);
         playerLifeMeter.setPosition(50, 12);
+    }
+
+    public void generateEnemyCounterImages(){
+        for(int i = 0; i < 9; i++){
+            enemyCounterImages.add(new Texture(Gdx.files.internal("EnemyCounterImages/EnemyCounter" + i + ".png")));
+        }
+
+        enemyCounter = new Sprite(enemyCounterImages.get(0));
+        enemyCounter.setPosition(180, 18);
+        enemyCounter.setScale(4, 4);
 
     }
 
     public void render(){
         renderPlayerLives();
+        renderEnemyCounter();
     }
 
     public void renderPlayerLives(){
-        System.out.println(playerLives);
-        System.out.println(BluePlaneSprite.lives);
+        //System.out.println(playerLives);
+        //System.out.println(BluePlaneSprite.lives);
         if(playerLives != BluePlaneSprite.lives && BluePlaneSprite.lives >= 0){
             playerLives = BluePlaneSprite.lives;
             playerLifeMeter.setTexture(playerLifeImages.get(playerLives));
         }
         playerLifeMeter.draw(batch);
+    }
+
+    public void renderEnemyCounter(){
+        if(escapedEnemies != EnemyManager.enemiesEscaped && EnemyManager.enemiesEscaped < 8){
+            escapedEnemies = EnemyManager.enemiesEscaped;
+            enemyCounter.setTexture(enemyCounterImages.get(escapedEnemies));
+        } else if (EnemyManager.enemiesEscaped > 8){
+            enemyCounter.setTexture(enemyCounterImages.get(8));
+        }
+        enemyCounter.draw(batch);
     }
 
 

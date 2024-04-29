@@ -62,7 +62,7 @@ public class BulletCollision implements ContactListener {
             BluePlaneSprite player = (BluePlaneSprite) contact.getFixtureA().getUserData();
             WingMan wing = (WingMan) contact.getFixtureB().getUserData();
             if(wing.isActive){
-                System.out.println("spawn wingman");
+                //System.out.println("spawn wingman");
                 player.spawnWingman();
             }
             wing.destroy();
@@ -71,7 +71,7 @@ public class BulletCollision implements ContactListener {
             BluePlaneSprite player = (BluePlaneSprite) contact.getFixtureB().getUserData();
             WingMan wing = (WingMan) contact.getFixtureB().getUserData();
             if(wing.isActive){
-                System.out.println("spawn wingman");
+                //System.out.println("spawn wingman");
                 player.spawnWingman();
             }
             wing.destroy();

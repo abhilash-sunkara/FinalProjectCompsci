@@ -131,4 +131,9 @@ public class EnemyPlaneSprite {
         }
     }
 
+    public boolean isOutOfBounds(){
+
+        return body.getPosition().y < 0;
+
+    }
 }

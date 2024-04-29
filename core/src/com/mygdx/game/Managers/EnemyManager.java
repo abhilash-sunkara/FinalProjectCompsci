@@ -19,6 +19,8 @@ public class EnemyManager{
 
     private ArrayList<Body> bodyRemover;
 
+    public static int enemiesEscaped = 0;
+
     public EnemyManager(SpriteBatch input, World world, ArrayList<Body> ar){
         batch = input;
         enemies = new ArrayList<>();
@@ -44,6 +46,13 @@ public class EnemyManager{
                 i--;
             } else {
                 enemies.get(i).update();
+                if(enemies.get(i).isOutOfBounds()){
+                    bodyRemover.add(enemies.get(i).body);
+                    enemies.remove(i);
+                    i--;
+                    enemiesEscaped++;
+                    System.out.println("Total enemies escaped : " + enemiesEscaped);
+                }
             }
         }
     }

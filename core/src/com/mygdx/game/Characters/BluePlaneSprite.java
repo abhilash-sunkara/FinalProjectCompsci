@@ -12,6 +12,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.mygdx.game.GameLevel.Plane;
 import com.mygdx.game.Projectiles.Bullet;
 import com.badlogic.gdx.audio.*;
+import com.mygdx.game.Projectiles.BurstBullet;
 
 
 import java.util.ArrayList;
@@ -21,8 +22,16 @@ public class BluePlaneSprite {
     private Sprite sprite;
     private SpriteBatch renderer;
     ArrayList<Bullet> bulletManager = new ArrayList<>();
+    ArrayList<BurstBullet> BurstBulletManager = new ArrayList<>();
+    private boolean shotFirst;
+    private boolean shotSecond;
+    private boolean shotThird;
+    private float burstTimer;
+    private float burstDelay = 0.25f;
+
+
     float timeSeconds = 0f;
-    float weaponFireDelay = 0.1f;
+    float weaponFireDelay = 1f;
     private boolean canShoot = true;
     private BodyDef bf = new BodyDef();
     private Body planeBody;
@@ -142,9 +151,65 @@ public class BluePlaneSprite {
 
     }
 
+    public void burstWeaponControl(){
+        timeSeconds += Gdx.graphics.getDeltaTime();
+        burstTimer += Gdx.graphics.getDeltaTime();
+
+        if(Gdx.input.isKeyPressed(Input.Keys.SPACE) && canShoot){
+            bulletManager.add(new Bullet("tracer.png", renderer, world).setPosition(sprite.getX(), sprite.getY()));
+            shotFirst = true;
+            canShoot = false;
+            burstTimer = 0;
+            //System.out.println("running shot first");
+        }
+
+        if(shotFirst && burstTimer > burstDelay){
+            bulletManager.add(new Bullet("tracer.png", renderer, world).setPosition(sprite.getX(), sprite.getY()));
+            shotFirst = false;
+            shotSecond = true;
+            burstTimer = 0;
+            //System.out.println("running shot second");
+        }
+
+        if(shotSecond && burstTimer > burstDelay){
+            bulletManager.add(new Bullet("tracer.png", renderer, world).setPosition(sprite.getX(), sprite.getY()));
+            shotSecond = false;
+            shotThird = true;
+            burstTimer = 0;
+            //System.out.println("running shot third");
+        }
+
+        if(shotThird){
+            shotFirst = false;
+            shotSecond = false;
+            shotThird = false;
+            timeSeconds = 0;
+            canShoot = false;
+        }
+
+        if(timeSeconds > weaponFireDelay){
+            canShoot = true;
+            timeSeconds -= weaponFireDelay;
+        }
+
+        //System.out.println(BurstBulletManager.size());
+
+        for(int i = 0; i < bulletManager.size(); i++){
+            if(!bulletManager.get(i).isActive){
+                bodyRemover.add(bulletManager.get(i).body);
+                bulletManager.remove(i);
+                i--;
+            } else{
+                //System.out.println("updating");
+                bulletManager.get(i).update();
+            }
+        }
+
+    }
+
     public void update(){
         planeMovement();
-        weaponControl();
+        burstWeaponControl();
         if(isWingManActive){
             wingman.update();
         }

@@ -23,6 +23,7 @@ import com.mygdx.game.Managers.PowerUpManager;
 import com.mygdx.game.Managers.UserInterfaceManager;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.Color;
+import com.mygdx.game.Projectiles.BurstBullet;
 
 import java.util.ArrayList;
 
@@ -92,13 +93,14 @@ public class Plane extends Game {
 
 
 	public void render () {
-		if(BluePlaneSprite.lives > 0) {
+		if(BluePlaneSprite.lives > 0 && EnemyManager.enemiesEscaped < 8) {
 			ScreenUtils.clear(1, 1, 1, 1);
 			batch.begin();
 			backgroundOcean.updateAndRender(Gdx.graphics.getDeltaTime(), batch);
 			planeSprite.update();
-			boss.update();
+			//boss.update();
 			ui.render();
+			powerUps.update();
 			isAbleToReset = false;
 			world.step(1 / 60f, 6, 2);
 			world.step(1 / 60f, 6, 2);
@@ -116,7 +118,7 @@ public class Plane extends Game {
 
 			batch.begin();
 			batch.draw(new Texture("GameOverScreen.jpeg"),-150f,00f,800f,480f);
-			font.draw(batch, "U Suck Dick", Gdx.graphics.getWidth() * .35f, Gdx.graphics.getHeight() * .75f);
+			font.draw(batch, "Game Over", Gdx.graphics.getWidth() * .35f, Gdx.graphics.getHeight() * .75f);
 			batch.end();
 		}
 
@@ -133,12 +135,12 @@ public class Plane extends Game {
 	public void removeAllInactive(){
 		world.getBodies(removeNonMovingBodies);
 		for(Body b : removeNonMovingBodies){
-			if(b.getUserData() != null && (b.getUserData().getClass() != BluePlaneSprite.class && b.getUserData().getClass() != WingManSprite.class) && b.getLinearVelocity().isZero()){
-				System.out.println("running main: " + b.getUserData());
+			if(b.getUserData() != null && (b.getUserData().getClass() != BluePlaneSprite.class && b.getUserData().getClass() != WingManSprite.class && b.getUserData().getClass() != BurstBullet.class) && b.getLinearVelocity().isZero()){
+				//System.out.println("running main: " + b.getUserData());
 				world.destroyBody(b);
 				removedBodies.add(b);
 			} else if (b.getLinearVelocity().isZero() && b.getUserData() == null){
-				System.out.println("running alternate : " + b.getUserData());
+				//System.out.println("running alternate : " + b.getUserData());
 				world.destroyBody(b);
 				removedBodies.add(b);
 			}
