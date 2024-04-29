@@ -62,8 +62,8 @@ public class UserInterfaceManager {
     }
 
     public void renderPlayerLives(){
-        //System.out.println(playerLives);
-        //System.out.println(BluePlaneSprite.lives);
+        System.out.println(playerLives);
+        System.out.println(BluePlaneSprite.lives);
         if(playerLives != BluePlaneSprite.lives && BluePlaneSprite.lives >= 0){
             playerLives = BluePlaneSprite.lives;
             playerLifeMeter.setTexture(playerLifeImages.get(playerLives));

@@ -2,7 +2,11 @@ package com.mygdx.game.GameLevel;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -17,6 +21,8 @@ import com.mygdx.game.Background.MovingBackgroundOcean;
 import com.mygdx.game.Managers.EnemyManager;
 import com.mygdx.game.Managers.PowerUpManager;
 import com.mygdx.game.Managers.UserInterfaceManager;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.graphics.Color;
 
 import java.util.ArrayList;
 
@@ -43,6 +49,8 @@ public class Plane extends Game {
 
 	public static boolean isAbleToReset = false;
 
+	private BitmapFont font;
+
 	@Override
 	public void create () {
 		camera = new OrthographicCamera();
@@ -65,28 +73,58 @@ public class Plane extends Game {
 
 		world.setContactListener(new BulletCollision());
 
+		FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("monogram.ttf"));
+		FreeTypeFontGenerator.FreeTypeFontParameter params = new FreeTypeFontGenerator.FreeTypeFontParameter();
+
+		params.borderWidth = 0f;
+		params.borderColor = Color.BLACK;
+		params.characters = FreeTypeFontGenerator.DEFAULT_CHARS;
+		params.magFilter = Texture.TextureFilter.Nearest;
+		params.minFilter = Texture.TextureFilter.Nearest;
+		params.genMipMaps = true;
+		params.size = 60;
+		params.color = Color.WHITE;
+
+		font = generator.generateFont(params);
+
+
 	}
 
 
 	public void render () {
-		ScreenUtils.clear(1, 1, 1, 1);
-		batch.begin();
-		backgroundOcean.updateAndRender(Gdx.graphics.getDeltaTime(),batch);
-		planeSprite.update();
-		boss.update();
-		ui.render();
-		powerUps.update();
-		isAbleToReset = false;
-		world.step(1/60f, 6, 2);
-		world.step(1/60f, 6, 2);
-		world.step(1/60f, 6, 2);
-		world.step(1/60f, 6, 2);
-		world.step(1/60f, 6, 2);
-		isAbleToReset = true;
-		removeAllInactive();
-		//debugRenderer.render(world, camera.combined);
+		if(BluePlaneSprite.lives > 0) {
+			ScreenUtils.clear(1, 1, 1, 1);
+			batch.begin();
+			backgroundOcean.updateAndRender(Gdx.graphics.getDeltaTime(), batch);
+			planeSprite.update();
+			boss.update();
+			ui.render();
+			isAbleToReset = false;
+			world.step(1 / 60f, 6, 2);
+			world.step(1 / 60f, 6, 2);
+			world.step(1 / 60f, 6, 2);
+			world.step(1 / 60f, 6, 2);
+			world.step(1 / 60f, 6, 2);
+			isAbleToReset = true;
+			removeAllInactive();
+			//debugRenderer.render(world, camera.combined);
 
-		batch.end();
+			batch.end();
+		}else{
+			Gdx.gl.glClearColor(.25f, 0, 0, 1);
+			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+			batch.begin();
+			batch.draw(new Texture("GameOverScreen.jpeg"),-150f,00f,800f,480f);
+			font.draw(batch, "U Suck Dick", Gdx.graphics.getWidth() * .35f, Gdx.graphics.getHeight() * .75f);
+			batch.end();
+		}
+
+		if(Gdx.input.isKeyPressed(Input.Keys.Y)) {
+			batch.begin();
+			batch.dispose();
+			batch.end();
+		}
 
 	}
 
