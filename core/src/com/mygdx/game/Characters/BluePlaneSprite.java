@@ -19,7 +19,7 @@ import java.util.ArrayList;
 
 public class BluePlaneSprite {
 
-    private Sprite sprite;
+    public Sprite sprite;
     private SpriteBatch renderer;
     ArrayList<Bullet> bulletManager = new ArrayList<>();
     ArrayList<BurstBullet> BurstBulletManager = new ArrayList<>();
@@ -156,15 +156,16 @@ public class BluePlaneSprite {
         burstTimer += Gdx.graphics.getDeltaTime();
 
         if(Gdx.input.isKeyPressed(Input.Keys.SPACE) && canShoot){
-            bulletManager.add(new Bullet("tracer.png", renderer, world).setPosition(sprite.getX(), sprite.getY()));
+            bulletManager.add(new Bullet("tracer.png", renderer, world).setPosition(sprite.getX() + 267, sprite.getY() + 200));
             shotFirst = true;
             canShoot = false;
             burstTimer = 0;
+            browningMusic.play();
             //System.out.println("running shot first");
         }
 
         if(shotFirst && burstTimer > burstDelay){
-            bulletManager.add(new Bullet("tracer.png", renderer, world).setPosition(sprite.getX(), sprite.getY()));
+            bulletManager.add(new Bullet("tracer.png", renderer, world).setPosition(sprite.getX() + 267, sprite.getY() + 200));
             shotFirst = false;
             shotSecond = true;
             burstTimer = 0;
@@ -172,7 +173,7 @@ public class BluePlaneSprite {
         }
 
         if(shotSecond && burstTimer > burstDelay){
-            bulletManager.add(new Bullet("tracer.png", renderer, world).setPosition(sprite.getX(), sprite.getY()));
+            bulletManager.add(new Bullet("tracer.png", renderer, world).setPosition(sprite.getX() + 267, sprite.getY() + 200));
             shotSecond = false;
             shotThird = true;
             burstTimer = 0;
@@ -185,6 +186,7 @@ public class BluePlaneSprite {
             shotThird = false;
             timeSeconds = 0;
             canShoot = false;
+            browningMusic.pause();
         }
 
         if(timeSeconds > weaponFireDelay){

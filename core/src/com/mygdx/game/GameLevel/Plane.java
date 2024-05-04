@@ -33,7 +33,7 @@ public class Plane extends Game {
 	OrthographicCamera camera;
 
 	//private BluePlane player = new BluePlane();
-	String bluePlaneImg = "ship_0000.png";
+	String bluePlaneImg = "p-51.png";
 	BluePlaneSprite planeSprite;
 	World world;
 	EnemyManager boss;
@@ -60,6 +60,7 @@ public class Plane extends Game {
 		world = new World(new Vector2(0, 0), true);
 
 		planeSprite = new BluePlaneSprite(bluePlaneImg, batch, world, bodyRemover);
+		planeSprite.sprite.setScale(0.08f);
 		boss = new EnemyManager(batch, world, bodyRemover);
 		ui = new UserInterfaceManager(batch);
 		powerUps = new PowerUpManager(batch, world);
