@@ -100,7 +100,9 @@ public class Plane extends Game {
 			planeSprite.update();
 			//boss.update();
 			ui.render();
-			powerUps.update();
+			if( !planeSprite.isWingManActive ){
+				powerUps.update();
+			}
 			isAbleToReset = false;
 			world.step(1 / 60f, 6, 2);
 			world.step(1 / 60f, 6, 2);
