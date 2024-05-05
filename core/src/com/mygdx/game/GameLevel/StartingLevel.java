@@ -8,6 +8,13 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 
 
 public class StartingLevel extends Plane {
@@ -28,6 +35,10 @@ public class StartingLevel extends Plane {
     private boolean renderPlane;
 
     private Music propBgMusic;
+
+    private Stage stage;
+
+    private Label outputLabel;
 
     @Override
     public void create() {
@@ -60,6 +71,29 @@ public class StartingLevel extends Plane {
         textureCount = 0;
 
         timePast = 0;
+
+        stage = new Stage(new ScreenViewport());
+        Gdx.input.setInputProcessor(stage);
+
+        Skin mySkin = new Skin(Gdx.files.internal("TestSkin/glassy-ui.json"));
+        TextButton button = new TextButton("TestButton", mySkin, "small");
+        button.setSize(100,20);
+        button.setPosition(100,100);
+        button.setTransform(true);
+        button.setScale(0.5f);
+        button.addListener(new InputListener(){
+            public void touchUp(InputEvent event, float x, float y, int pointer, int buttonNum){
+                outputLabel.setText("press a button");
+            }
+
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int buttonNum){
+                outputLabel.setText("pressed button");
+                return true;
+            }
+        
+        });
+
+        stage.addActor(button);
     }
 
  
@@ -92,20 +126,18 @@ public class StartingLevel extends Plane {
 
         show();
 
+        stage.act();
+        stage.draw();
+
         elapsed += Gdx.graphics.getDeltaTime();
         super.batch.begin();
         super.batch.draw(animation.getKeyFrame(elapsed),-500f,-200f);
         font.draw(super.batch, "Press Enter To Start", Gdx.graphics.getWidth() * .15f, Gdx.graphics.getHeight() * .75f);
         super.batch.end();
 
-
-
         if(renderPlane) {
-
             super.render();
         }
 
     }
-
-
 }
