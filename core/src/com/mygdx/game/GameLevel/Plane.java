@@ -138,28 +138,22 @@ public class Plane extends Game {
 			if(b.getUserData() != null && (b.getUserData().getClass() != BluePlaneSprite.class && b.getUserData().getClass() != WingManSprite.class && b.getUserData().getClass() != BurstBullet.class) && b.getLinearVelocity().isZero()){
 				//System.out.println("running main: " + b.getUserData());
 				world.destroyBody(b);
+				//b = null;
 				removedBodies.add(b);
 			} else if (b.getLinearVelocity().isZero() && b.getUserData() == null){
 				//System.out.println("running alternate : " + b.getUserData());
 				world.destroyBody(b);
+				//b = null;
 				removedBodies.add(b);
 			}
 		}
 		for(Body b : bodyRemover){
 			if(!removedBodies.contains(b)) {
 				world.destroyBody(b);
+				//b = null;
 				removedBodies.add(b);
 			}
 		}
-
-
-
-
-
-
-
-
-
 	}
 	
 	@Override

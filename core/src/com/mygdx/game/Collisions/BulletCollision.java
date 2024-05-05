@@ -61,7 +61,7 @@ public class BulletCollision implements ContactListener {
         } else if(contact.getFixtureA().getUserData().getClass() == BluePlaneSprite.class && contact.getFixtureB().getUserData().getClass() == WingMan.class){
             BluePlaneSprite player = (BluePlaneSprite) contact.getFixtureA().getUserData();
             WingMan wing = (WingMan) contact.getFixtureB().getUserData();
-            if(wing.isActive){
+            if(wing.getActive()){
                 //System.out.println("spawn wingman");
                 player.spawnWingman();
             }
@@ -70,7 +70,7 @@ public class BulletCollision implements ContactListener {
         } else if(contact.getFixtureB().getUserData().getClass() == BluePlaneSprite.class && contact.getFixtureA().getUserData().getClass() == WingMan.class){
             BluePlaneSprite player = (BluePlaneSprite) contact.getFixtureB().getUserData();
             WingMan wing = (WingMan) contact.getFixtureB().getUserData();
-            if(wing.isActive){
+            if(wing.getActive()){
                 //System.out.println("spawn wingman");
                 player.spawnWingman();
             }

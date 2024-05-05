@@ -72,7 +72,7 @@ public class BluePlaneSprite {
 
         bodyRemover = ar;
 
-        wingman = new WingManSprite("ship_0008.png", batch, world, this);
+        wingman = new WingManSprite("ship_0008.png", batch, world, this, bodyRemover);
         browningMusic = Gdx.audio.newMusic(Gdx.files.internal("browning.mp3"));
     }
 
@@ -225,7 +225,7 @@ public class BluePlaneSprite {
                 shouldReset = false;
             }
         } else if (shouldReset) {
-            isWingManActive = false;
+            destroyWingman();
             shouldReset = false;
         }
 
@@ -241,7 +241,14 @@ public class BluePlaneSprite {
 
     public void spawnWingman(){
         isWingManActive = true;
-        wingman.activate();
+    }
+
+    public void destroyWingman(){
+        isWingManActive = false;
+    }
+
+    public boolean getIsWingmanActive(){
+        return isWingManActive;
     }
 
     public Vector2 getPos(){

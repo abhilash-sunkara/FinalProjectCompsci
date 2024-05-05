@@ -34,6 +34,7 @@ public class Bullet {
         fd.filter.groupIndex = -1;
         fd.shape = cs;
         Fixture fixture = body.createFixture(fd);
+        fixture.setSensor(true);
         fixture.setUserData(this);
         f=fixture;
 

@@ -1,11 +1,11 @@
 package com.mygdx.game.PowerUps;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.physics.box2d.World;
 
-public class WingMan extends PowerUp{
+public class CarpetBomb extends PowerUp{
 
-    public WingMan(SpriteBatch batch, World world, String img){
+    public CarpetBomb(SpriteBatch batch, World world, String img) {
         super(batch, world, img);
     }
 

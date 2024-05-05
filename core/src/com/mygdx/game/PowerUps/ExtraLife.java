@@ -1,12 +1,12 @@
 package com.mygdx.game.PowerUps;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.physics.box2d.World;
 
-public class WingMan extends PowerUp{
+public class ExtraLife extends PowerUp{
 
-    public WingMan(SpriteBatch batch, World world, String img){
-        super(batch, world, img);
+    public ExtraLife(SpriteBatch sb, World w, String img){
+        super(sb, w, img);
     }
 
     public void update(){
@@ -20,4 +20,5 @@ public class WingMan extends PowerUp{
     public void destroy(){
         super.destroy();
     }
+
 }

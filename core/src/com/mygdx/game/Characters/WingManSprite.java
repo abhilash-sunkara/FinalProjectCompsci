@@ -16,23 +16,22 @@ public class WingManSprite {
 
     private Sprite sprite;
     private SpriteBatch renderer;
+    private BodyDef bf = new BodyDef();
+    private Body planeBody;
+    private World world;
+
+    private ArrayList<Body> bodyRemover;
     ArrayList<Bullet> bulletManager = new ArrayList<>();
     float timeSeconds = 0f;
     float weaponFireDelay = 0.1f;
     private boolean canShoot = true;
-    private BodyDef bf = new BodyDef();
-    private Body planeBody;
-    private final float MAX_VEL = 1000f;
-    private World world;
-
-    public static int lives = 3;
-    private boolean shouldReset = false;
-
-    private ArrayList<Body> bodyRemover;
-
+    
     private BluePlaneSprite player;
+    private float timeLimit = 2f;
+    private float limitCounter = 0f;
+    
 
-    public WingManSprite(String imgFile, SpriteBatch batch, World world, BluePlaneSprite p){
+    public WingManSprite(String imgFile, SpriteBatch batch, World world, BluePlaneSprite p, ArrayList<Body> br){
 
         sprite = new Sprite(new Texture(Gdx.files.internal(imgFile)));
         renderer = batch;
@@ -54,28 +53,62 @@ public class WingManSprite {
         fixture.setUserData(this);
         System.out.println(fixture);
 
+        bodyRemover = br;
+
         player = p;
     }
 
     public void planeMovement(){
         if(Plane.isAbleToReset){
-            //System.out.println("ran pos control");
             planeBody.setTransform(player.getPos().x - 16, player.getPos().y - 16, 0);
         }
         sprite.setCenter(planeBody.getPosition().x, planeBody.getPosition().y);
     }
 
+    public void weaponControl(){
+        timeSeconds += Gdx.graphics.getDeltaTime();
+
+        if(canShoot){
+            bulletManager.add(new Bullet("tracer.png", renderer, world).setPosition(sprite.getX(), sprite.getY()));
+            canShoot = false;
+        }
+
+        if(timeSeconds > weaponFireDelay){
+            canShoot = true;
+            timeSeconds -= weaponFireDelay;
+        }
+
+        for(int i = 0; i < bulletManager.size(); i++){
+            if(!bulletManager.get(i).isActive){
+                bodyRemover.add(bulletManager.get(i).body);
+                bulletManager.remove(i);
+                i--;
+            } else{
+                bulletManager.get(i).update();
+            }
+        }
+    }
+    
+    public void timeLimitDespawn(){
+        if(player.getIsWingmanActive()){
+            limitCounter += Gdx.graphics.getDeltaTime();
+            if(limitCounter > timeLimit){
+                player.destroyWingman();
+                deactivate();
+                limitCounter -= timeLimit;
+            }
+        }
+    }
+
     public void update(){
         planeMovement();
         sprite.draw(renderer);
+        weaponControl();
+        timeLimitDespawn();
     }
 
-    public void activate(){
-
-    }
-
-    public void deActivate(){
-
+    public void deactivate(){
+        bulletManager.clear();
     }
 
 }
