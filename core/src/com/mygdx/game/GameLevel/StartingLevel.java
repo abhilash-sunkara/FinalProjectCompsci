@@ -40,6 +40,8 @@ public class StartingLevel extends Plane {
 
     private Label outputLabel;
 
+    private TextButton button;
+
     @Override
     public void create() {
         super.create();
@@ -76,11 +78,11 @@ public class StartingLevel extends Plane {
         Gdx.input.setInputProcessor(stage);
 
         Skin mySkin = new Skin(Gdx.files.internal("TestSkin/glassy-ui.json"));
-        TextButton button = new TextButton("TestButton", mySkin, "small");
-        button.setSize(100,20);
-        button.setPosition(100,100);
+        button = new TextButton("TestButton", mySkin, "small");
+        button.setSize(100,30);
+        button.setPosition(400-125, 240);
         button.setTransform(true);
-        button.setScale(0.5f);
+        button.setScale(1f);
         button.addListener(new InputListener(){
             public void touchUp(InputEvent event, float x, float y, int pointer, int buttonNum){
                 outputLabel.setText("press a button");
@@ -88,10 +90,17 @@ public class StartingLevel extends Plane {
 
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int buttonNum){
                 outputLabel.setText("pressed button");
+                System.out.println("ouch");
+                Gdx.app.log("button", "ouch");
                 return true;
             }
-        
         });
+
+        outputLabel = new Label("Press a Button", mySkin, "black");
+        outputLabel.setSize(100, 30);
+        outputLabel.setPosition(400 - 125, 240);
+        outputLabel.setAlignment(1);
+        stage.addActor(outputLabel);
 
         stage.addActor(button);
     }
@@ -129,9 +138,16 @@ public class StartingLevel extends Plane {
         stage.act();
         stage.draw();
 
+        
+        
+
         elapsed += Gdx.graphics.getDeltaTime();
         super.batch.begin();
         super.batch.draw(animation.getKeyFrame(elapsed),-500f,-200f);
+        
+        button.draw(super.batch, 1);
+        outputLabel.draw(super.batch, 1);
+
         font.draw(super.batch, "Press Enter To Start", Gdx.graphics.getWidth() * .15f, Gdx.graphics.getHeight() * .75f);
         super.batch.end();
 
