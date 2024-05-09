@@ -16,14 +16,13 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.mygdx.game.Characters.BluePlaneSprite;
 import com.mygdx.game.Characters.WingManSprite;
-import com.mygdx.game.Collisions.BulletCollision;
 import com.mygdx.game.Background.MovingBackgroundOcean;
+import com.mygdx.game.Collisions.CollisionManager;
 import com.mygdx.game.Managers.EnemyManager;
 import com.mygdx.game.Managers.PowerUpManager;
 import com.mygdx.game.Managers.UserInterfaceManager;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.Color;
-import com.mygdx.game.Projectiles.BurstBullet;
 
 import java.util.ArrayList;
 
@@ -32,7 +31,6 @@ public class Plane extends Game {
 
 	OrthographicCamera camera;
 
-	//private BluePlane player = new BluePlane();
 	String bluePlaneImg = "p-51.png";
 	BluePlaneSprite planeSprite;
 	World world;
@@ -49,7 +47,6 @@ public class Plane extends Game {
 	MovingBackgroundOcean backgroundOcean;
 
 	public static boolean isAbleToReset = false;
-
 	private BitmapFont font;
 
 	@Override
@@ -59,21 +56,18 @@ public class Plane extends Game {
 		batch = new SpriteBatch();
 		world = new World(new Vector2(0, 0), true);
 
-		planeSprite = new BluePlaneSprite(bluePlaneImg, batch, world, bodyRemover);
-		planeSprite.sprite.setScale(0.08f);
+
+
 		boss = new EnemyManager(batch, world, bodyRemover);
+		planeSprite = new BluePlaneSprite(bluePlaneImg, batch, world, bodyRemover, boss);
+		planeSprite.sprite.setScale(0.08f);
 		ui = new UserInterfaceManager(batch);
 		powerUps = new PowerUpManager(batch, world);
 
 		debugRenderer = new Box2DDebugRenderer();
-		//planeSprite = new BluePlaneSprite(bluePlaneImg, batch);
-		//enemyPlaneSprite = new EnemyPlaneSprite(enemyPlaneImg, batch);
-		//boss = new EnemyManager(batch, world);
-		//player.create(bluePlaneImg);
-
 		backgroundOcean = new MovingBackgroundOcean();
 
-		world.setContactListener(new BulletCollision());
+		world.setContactListener(new CollisionManager());
 
 		FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("monogram.ttf"));
 		FreeTypeFontGenerator.FreeTypeFontParameter params = new FreeTypeFontGenerator.FreeTypeFontParameter();
@@ -101,19 +95,16 @@ public class Plane extends Game {
 			planeSprite.update();
 			//boss.update();
 			ui.render();
-			if( !planeSprite.isWingManActive ){
-				powerUps.update();
-			}
+			powerUps.update();
 			isAbleToReset = false;
-			world.step(1 / 60f, 6, 2);
-			world.step(1 / 60f, 6, 2);
-			world.step(1 / 60f, 6, 2);
-			world.step(1 / 60f, 6, 2);
-			world.step(1 / 60f, 6, 2);
+			world.step(1 / 60f, 12, 2);
+			world.step(1 / 60f, 12, 2);
+			world.step(1 / 60f, 12, 2);
+			world.step(1 / 60f, 12, 2);
+			world.step(1 / 60f, 12, 2);
+			//debugRenderer.render(world, camera.combined);
 			isAbleToReset = true;
 			removeAllInactive();
-			//debugRenderer.render(world, camera.combined);
-
 			batch.end();
 		}else{
 			Gdx.gl.glClearColor(.25f, 0, 0, 1);
@@ -138,12 +129,10 @@ public class Plane extends Game {
 	public void removeAllInactive(){
 		world.getBodies(removeNonMovingBodies);
 		for(Body b : removeNonMovingBodies){
-			if(b.getUserData() != null && (b.getUserData().getClass() != BluePlaneSprite.class && b.getUserData().getClass() != WingManSprite.class && b.getUserData().getClass() != BurstBullet.class) && b.getLinearVelocity().isZero()){
-				//System.out.println("running main: " + b.getUserData());
+			if(b.getUserData() != null && (b.getUserData().getClass() != BluePlaneSprite.class && b.getUserData().getClass() != WingManSprite.class) && b.getLinearVelocity().isZero()){
 				world.destroyBody(b);
 				removedBodies.add(b);
 			} else if (b.getLinearVelocity().isZero() && b.getUserData() == null){
-				//System.out.println("running alternate : " + b.getUserData());
 				world.destroyBody(b);
 				removedBodies.add(b);
 			}
@@ -154,15 +143,6 @@ public class Plane extends Game {
 				removedBodies.add(b);
 			}
 		}
-
-
-
-
-
-
-
-
-
 	}
 	
 	@Override

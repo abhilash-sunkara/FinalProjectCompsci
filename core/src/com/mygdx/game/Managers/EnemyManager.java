@@ -1,6 +1,7 @@
 package com.mygdx.game.Managers;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;
@@ -55,5 +56,13 @@ public class EnemyManager{
                 }
             }
         }
+    }
+
+    public void clearAllEnemies(){
+        for(int i = 0; i < enemies.size(); i++){
+            enemies.get(i).destroy();
+            //bodyRemover.add(enemies.get(i).body);
+        }
+        enemies.clear();
     }
 }

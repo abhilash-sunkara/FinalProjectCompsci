@@ -120,7 +120,7 @@ public class StartingLevel extends Plane {
                     propBgMusic = Gdx.audio.newMusic(Gdx.files.internal("prop.mp3"));
 		            propBgMusic.setLooping(true);
                     propBgMusic.setVolume(0.5f);
-		            propBgMusic.play();
+		            //propBgMusic.play();
                 }
                 return true;
             }

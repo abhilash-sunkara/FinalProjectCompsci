@@ -28,65 +28,7 @@ public class BulletCollision implements ContactListener {
                 es.destroy();
             }
             b.destroy();
-        } else if(contact.getFixtureA().getUserData().getClass() == BluePlaneSprite.class && contact.getFixtureB().getUserData().getClass() == EnemyPlaneSprite.class){
-            BluePlaneSprite player = (BluePlaneSprite) contact.getFixtureA().getUserData();
-            EnemyPlaneSprite enemy = (EnemyPlaneSprite) contact.getFixtureB().getUserData();
-            if(enemy.isActive){
-                player.resetToggle();
-            }
-            enemy.destroy();
-        } else if (contact.getFixtureB().getUserData().getClass() == BluePlaneSprite.class && contact.getFixtureA().getUserData().getClass() == EnemyPlaneSprite.class){
-            BluePlaneSprite player = (BluePlaneSprite) contact.getFixtureB().getUserData();
-            EnemyPlaneSprite enemy = (EnemyPlaneSprite) contact.getFixtureA().getUserData();
-            if(enemy.isActive){
-                player.resetToggle();
-            }
-            enemy.destroy();
-        } else if(contact.getFixtureA().getUserData().getClass() == BluePlaneSprite.class && contact.getFixtureB().getUserData().getClass() == EnemyBullet.class) {
-            BluePlaneSprite player = (BluePlaneSprite) contact.getFixtureA().getUserData();
-            EnemyBullet enemyBullet = (EnemyBullet) contact.getFixtureB().getUserData();
-            if (enemyBullet.isActive && enemyBullet.getVelocity() < 0f) {
-                player.resetToggle();
-            }
-            enemyBullet.destroy();
-            //System.out.println("hit enemy bullet");
-        } else if(contact.getFixtureB().getUserData().getClass() == BluePlaneSprite.class && contact.getFixtureA().getUserData().getClass() == EnemyBullet.class) {
-            BluePlaneSprite player = (BluePlaneSprite) contact.getFixtureB().getUserData();
-            EnemyBullet enemyBullet = (EnemyBullet) contact.getFixtureA().getUserData();
-            if (enemyBullet.isActive && enemyBullet.getVelocity() < 0f) {
-                player.resetToggle();
-            }
-            enemyBullet.destroy();
-            //System.out.println("hit enemy bullet");
-        } else if(contact.getFixtureA().getUserData().getClass() == BluePlaneSprite.class && contact.getFixtureB().getUserData().getClass() == WingMan.class){
-            BluePlaneSprite player = (BluePlaneSprite) contact.getFixtureA().getUserData();
-            WingMan wing = (WingMan) contact.getFixtureB().getUserData();
-            if(wing.isActive){
-                //System.out.println("spawn wingman");
-                player.spawnWingman();
-            }
-            wing.destroy();
-
-        } else if(contact.getFixtureB().getUserData().getClass() == BluePlaneSprite.class && contact.getFixtureA().getUserData().getClass() == WingMan.class){
-            BluePlaneSprite player = (BluePlaneSprite) contact.getFixtureB().getUserData();
-            WingMan wing = (WingMan) contact.getFixtureB().getUserData();
-            if(wing.isActive){
-                //System.out.println("spawn wingman");
-                player.spawnWingman();
-            }
-            wing.destroy();
         }
-
-
-        /*
-        System.out.println("I am a " + contact.getFixtureA().getFilterData().categoryBits);
-        System.out.println("I should be getting by " + contact.getFixtureA().getFilterData().maskBits);
-        System.out.println("My class is " + contact.getFixtureA().getUserData());
-        System.out.println("Got hit by " + contact.getFixtureB().getFilterData().categoryBits);
-        System.out.println("Which should be hitting " + contact.getFixtureB().getFilterData().maskBits);
-        System.out.println("My class is " + contact.getFixtureB().getUserData());
-        */
-
     }
 
     @Override

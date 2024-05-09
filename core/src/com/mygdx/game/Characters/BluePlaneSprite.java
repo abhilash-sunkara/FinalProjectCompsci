@@ -10,9 +10,8 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.mygdx.game.GameLevel.Plane;
+import com.mygdx.game.Managers.EnemyManager;
 import com.mygdx.game.Projectiles.Bullet;
-import com.badlogic.gdx.audio.*;
-import com.mygdx.game.Projectiles.BurstBullet;
 
 
 import java.util.ArrayList;
@@ -22,20 +21,30 @@ public class BluePlaneSprite {
     public Sprite sprite;
     private SpriteBatch renderer;
     ArrayList<Bullet> bulletManager = new ArrayList<>();
-    ArrayList<BurstBullet> BurstBulletManager = new ArrayList<>();
     private boolean shotFirst;
     private boolean shotSecond;
     private boolean shotThird;
     private float burstTimer;
     private float burstDelay = 0.25f;
 
+    private FIREMODE firemode = FIREMODE.BURST;
+    private float machineGunTimeLimit = 5f;
+    private float machineGunTimeSeconds = 0f;
 
     float timeSeconds = 0f;
     float weaponFireDelay = 1f;
+
+    float machineGunFireTimer = 0f;
+    float machineGunFireDelay = 0.2f;
+
+    boolean extraSpeedActive = false;
+    float extraSpeedTimeLimit = 3f;
+    float extraSpeedTimer = 0f;
     private boolean canShoot = true;
     private BodyDef bf = new BodyDef();
     private Body planeBody;
-    private final float MAX_VEL = 1000f;
+    private float MAX_VEL = 2000f;
+    private float addedForce = 400;
     private World world;
     private Music browningMusic;
 
@@ -47,7 +56,9 @@ public class BluePlaneSprite {
     public boolean isWingManActive = false;
     WingManSprite wingman;
 
-    public BluePlaneSprite(String imgFile, SpriteBatch batch, World world, ArrayList<Body> ar){
+    EnemyManager enemyManager;
+
+    public BluePlaneSprite(String imgFile, SpriteBatch batch, World world, ArrayList<Body> ar, EnemyManager em){
         sprite = new Sprite(new Texture(Gdx.files.internal(imgFile)));
         renderer = batch;
         bf.type = BodyType.DynamicBody;
@@ -56,8 +67,6 @@ public class BluePlaneSprite {
         planeBody.setUserData(sprite);
         planeBody.setLinearDamping(2.0f);
         planeBody.setUserData(this);
-
-        //sprite.setScale(0.01f, 0.01f);
 
         CircleShape cs = new CircleShape();
         cs.setRadius(6f);
@@ -72,56 +81,43 @@ public class BluePlaneSprite {
 
         bodyRemover = ar;
 
-        wingman = new WingManSprite("ship_0008.png", batch, world, this);
+        wingman = new WingManSprite("ship_0008.png", batch, world, this, bodyRemover);
         browningMusic = Gdx.audio.newMusic(Gdx.files.internal("browning.mp3"));
-    }
 
-    /*
-    public void planeMovement(){
-        if(Gdx.input.isKeyPressed(Input.Keys.UP)){
-            sprite.translateY(2);
-        }
-        if(Gdx.input.isKeyPressed(Input.Keys.DOWN)){
-            sprite.translateY(-2);
-        }
-        if(Gdx.input.isKeyPressed(Input.Keys.RIGHT)){
-            sprite.translateX(2);
-        }
-        if(Gdx.input.isKeyPressed(Input.Keys.LEFT)){
-            sprite.translateX(-2);
-        }
+        enemyManager = em;
     }
-    */
 
     public void planeMovement(){
         if(Gdx.input.isKeyPressed(Input.Keys.RIGHT) && planeBody.getLinearVelocity().x < MAX_VEL){
-            planeBody.applyForceToCenter(400.0f, 0f, true);
+            planeBody.applyForceToCenter(addedForce, 0f, true);
         }
         if(Gdx.input.isKeyPressed(Input.Keys.LEFT) && planeBody.getLinearVelocity().x > -MAX_VEL) {
-            planeBody.applyForceToCenter(-400.0f, 0f, true);
+            planeBody.applyForceToCenter(-addedForce, 0f, true);
         }
         if(Gdx.input.isKeyPressed(Input.Keys.UP) && planeBody.getLinearVelocity().y < MAX_VEL) {
-            planeBody.applyForceToCenter(0f, 400.0f, true);
+            planeBody.applyForceToCenter(0f, addedForce, true);
         }
         if (Gdx.input.isKeyPressed(Input.Keys.DOWN) && planeBody.getLinearVelocity().y > -MAX_VEL){
-            planeBody.applyForceToCenter(0f, -400.0f, true);
+            planeBody.applyForceToCenter(0f, -addedForce, true);
         }
-        //System.out.println(planeBody.getLinearVelocity().x);
+
+        //System.out.println("X Vel : " + planeBody.getLinearVelocity().x +", Y Vel : " + planeBody.getLinearVelocity().y);
+
         sprite.setCenter(planeBody.getPosition().x, planeBody.getPosition().y);
 
     }
 
-    public void weaponControl(){
+    public void machineGunWeaponControl(){
 
-        timeSeconds += Gdx.graphics.getDeltaTime();
+        machineGunFireTimer += Gdx.graphics.getDeltaTime();
 
-        if(Gdx.input.isKeyPressed(Input.Keys.SPACE) && canShoot){
-            bulletManager.add(new Bullet("tracer.png", renderer, world).setPosition(sprite.getX(), sprite.getY()));
-            //System.out.println("bullet shot");
+        //System.out.println(canShoot);
+
+        if(canShoot){
+            //System.out.println("spawning");
+            //System.out.println("Sprite X : " + sprite.getX() + " Sprite Y : " + sprite.getY());
+            bulletManager.add(new Bullet("tracer.png", renderer, world).setPosition(planeBody.getPosition().x, planeBody.getPosition().y));
             canShoot = false;
-            //System.out.println("body.x : " + planeBody.getPosition().x);
-            //System.out.println("sprite.x : " + sprite.getX());
-            
         }
 
         if(Gdx.input.isKeyPressed(Input.Keys.SPACE)){
@@ -131,12 +127,11 @@ public class BluePlaneSprite {
             browningMusic.pause();
         }
 
-        if(timeSeconds > weaponFireDelay){
+        if(machineGunFireTimer > machineGunFireDelay){
             canShoot = true;
-            timeSeconds -= weaponFireDelay;
+            machineGunFireTimer -= machineGunFireDelay;
         }
 
-        //System.out.println(bulletManager.size());
 
         for(int i = 0; i < bulletManager.size(); i++){
             if(!bulletManager.get(i).isActive){
@@ -144,8 +139,8 @@ public class BluePlaneSprite {
                 bulletManager.remove(i);
                 i--;
             } else{
-                //System.out.println("updating");
                 bulletManager.get(i).update();
+                //System.out.println("updating");
             }
         }
 
@@ -161,7 +156,6 @@ public class BluePlaneSprite {
             canShoot = false;
             burstTimer = 0;
             browningMusic.play();
-            //System.out.println("running shot first");
         }
 
         if(shotFirst && burstTimer > burstDelay){
@@ -169,7 +163,6 @@ public class BluePlaneSprite {
             shotFirst = false;
             shotSecond = true;
             burstTimer = 0;
-            //System.out.println("running shot second");
         }
 
         if(shotSecond && burstTimer > burstDelay){
@@ -177,7 +170,6 @@ public class BluePlaneSprite {
             shotSecond = false;
             shotThird = true;
             burstTimer = 0;
-            //System.out.println("running shot third");
         }
 
         if(shotThird){
@@ -194,15 +186,12 @@ public class BluePlaneSprite {
             timeSeconds -= weaponFireDelay;
         }
 
-        //System.out.println(BurstBulletManager.size());
-
         for(int i = 0; i < bulletManager.size(); i++){
             if(!bulletManager.get(i).isActive){
                 bodyRemover.add(bulletManager.get(i).body);
                 bulletManager.remove(i);
                 i--;
             } else{
-                //System.out.println("updating");
                 bulletManager.get(i).update();
             }
         }
@@ -211,12 +200,32 @@ public class BluePlaneSprite {
 
     public void update(){
         planeMovement();
-        burstWeaponControl();
+        weaponControl();
+        setSpeed();
         if(isWingManActive){
             wingman.update();
         }
         sprite.draw(renderer);
         reset();
+        if(Gdx.input.isKeyPressed(Input.Keys.Q)){
+            lives = 1;
+        }
+    }
+
+    public void weaponControl(){
+        if(firemode == FIREMODE.BURST){
+            burstWeaponControl();
+            //System.out.println("Firing Burst Mode");
+        } else if (firemode == FIREMODE.MACHINEGUN){
+            machineGunWeaponControl();
+            machineGunTimeSeconds += Gdx.graphics.getDeltaTime();
+            //System.out.println("Firing MachineGun Mode");
+        }
+
+        if(machineGunTimeSeconds > machineGunTimeLimit){
+            firemode = FIREMODE.BURST;
+            machineGunTimeSeconds -= machineGunTimeLimit;
+        }
     }
 
     public void reset(){
@@ -227,10 +236,42 @@ public class BluePlaneSprite {
                 shouldReset = false;
             }
         } else if (shouldReset) {
-            isWingManActive = false;
+            destroyWingman();
             shouldReset = false;
         }
 
+    }
+
+    public void setExtraSpeed(){
+        extraSpeedActive = true;
+    }
+
+    public void addLife(){
+        if(lives < 4){
+            lives+=1;
+        }
+    }
+
+    public void removeLife(){
+        lives -= 1;
+    }
+
+    public void setSpeed(){
+        if(extraSpeedActive){
+            addedForce = 1200;
+            MAX_VEL = 4000;
+            extraSpeedTimer += Gdx.graphics.getDeltaTime();
+            if(extraSpeedTimer > extraSpeedTimeLimit){
+                extraSpeedActive = false;
+                addedForce = 400;
+                MAX_VEL = 2000;
+                extraSpeedTimer -= extraSpeedTimeLimit;
+            }
+        }
+    }
+
+    public void clearEnemies(){
+        enemyManager.clearAllEnemies();
     }
 
     public void resetToggle(){
@@ -243,10 +284,26 @@ public class BluePlaneSprite {
 
     public void spawnWingman(){
         isWingManActive = true;
-        wingman.activate();
+    }
+
+    public void destroyWingman(){
+        isWingManActive = false;
+    }
+
+    public boolean getIsWingmanActive(){
+        return isWingManActive;
     }
 
     public Vector2 getPos(){
         return planeBody.getTransform().getPosition();
     }
+
+    public void setFireMode(){
+        firemode = FIREMODE.MACHINEGUN;
+    }
+
+    public enum FIREMODE{
+        BURST, MACHINEGUN
+    }
+
 }
