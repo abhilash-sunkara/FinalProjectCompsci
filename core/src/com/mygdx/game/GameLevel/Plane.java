@@ -93,7 +93,7 @@ public class Plane extends Game {
 			batch.begin();
 			backgroundOcean.updateAndRender(Gdx.graphics.getDeltaTime(), batch);
 			planeSprite.update();
-			//boss.update();
+			boss.update();
 			ui.render();
 			powerUps.update();
 			isAbleToReset = false;
