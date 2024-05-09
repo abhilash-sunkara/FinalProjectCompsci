@@ -42,10 +42,13 @@ public class StartingLevel extends Plane {
 
     private TextButton button;
 
+    private Texture startTexture;
+
     @Override
     public void create() {
         super.create();
 
+        startTexture = new Texture("start.png");
 
         textureRegions = new TextureRegion[24];
 
@@ -96,13 +99,6 @@ public class StartingLevel extends Plane {
             }
         });
 
-        outputLabel = new Label("Press a Button", mySkin, "black");
-        outputLabel.setSize(100, 30);
-        outputLabel.setPosition(400 - 125, 240);
-        outputLabel.setAlignment(1);
-        stage.addActor(outputLabel);
-
-        stage.addActor(button);
     }
 
  
@@ -143,12 +139,13 @@ public class StartingLevel extends Plane {
 
         elapsed += Gdx.graphics.getDeltaTime();
         super.batch.begin();
+        
         super.batch.draw(animation.getKeyFrame(elapsed),-500f,-200f);
         
-        button.draw(super.batch, 1);
-        outputLabel.draw(super.batch, 1);
+        
 
         font.draw(super.batch, "Press Enter To Start", Gdx.graphics.getWidth() * .15f, Gdx.graphics.getHeight() * .75f);
+        super.batch.draw(startTexture, Gdx.graphics.getWidth() * .15f, Gdx.graphics.getHeight() * .75f);
         super.batch.end();
 
         if(renderPlane) {
