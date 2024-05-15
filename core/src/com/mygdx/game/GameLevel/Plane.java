@@ -14,11 +14,14 @@ import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.mygdx.game.Background.Button;
+import com.mygdx.game.Background.RestartButton;
 import com.mygdx.game.Characters.BluePlaneSprite;
 import com.mygdx.game.Characters.WingManSprite;
 import com.mygdx.game.Background.MovingBackgroundOcean;
 import com.mygdx.game.Collisions.CollisionManager;
 import com.mygdx.game.Managers.EnemyManager;
+import com.mygdx.game.Managers.MouseManager;
 import com.mygdx.game.Managers.PowerUpManager;
 import com.mygdx.game.Managers.UserInterfaceManager;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
@@ -38,7 +41,9 @@ public class Plane extends Game {
 	UserInterfaceManager ui;
 	PowerUpManager powerUps;
 	Box2DDebugRenderer debugRenderer;
+	MouseManager mouseManager;
 
+	Button restartButton;
 	ArrayList<Body> bodyRemover = new ArrayList<>();
 	ArrayList<Body> removedBodies = new ArrayList<>();
 
@@ -48,6 +53,12 @@ public class Plane extends Game {
 
 	public static boolean isAbleToReset = false;
 	private BitmapFont font;
+
+	private float timer;
+	private float timeToWin = 30;
+
+	public boolean renderStartScene = true;
+	public boolean playGame = true;
 
 	@Override
 	public void create () {
@@ -63,6 +74,8 @@ public class Plane extends Game {
 		planeSprite.sprite.setScale(0.08f);
 		ui = new UserInterfaceManager(batch);
 		powerUps = new PowerUpManager(batch, world);
+		mouseManager = new MouseManager();
+		restartButton = new RestartButton(436, 200, 160, 80, new Texture(Gdx.files.internal("ButtonUp.png")), new Texture(Gdx.files.internal("ButtonDown.png")), batch, 200, 80, 240, 80);
 
 		debugRenderer = new Box2DDebugRenderer();
 		backgroundOcean = new MovingBackgroundOcean();
@@ -82,20 +95,32 @@ public class Plane extends Game {
 		params.color = Color.WHITE;
 
 		font = generator.generateFont(params);
-
-
 	}
 
+	public boolean shouldPlay(){
+		//System.out.println("Lives : " + BluePlaneSprite.lives);
+		//System.out.println("Enemies escaped : " + EnemyManager.enemiesEscaped);
+		return (BluePlaneSprite.lives > 0 && EnemyManager.enemiesEscaped < 8) && (timer < timeToWin);
+	}
+
+	public boolean shouldLose(){
+		return BluePlaneSprite.lives <= 0 || EnemyManager.enemiesEscaped >= 8;
+	}
+
+	public boolean shouldWin(){
+		return timer > timeToWin;
+	}
 
 	public void render () {
-		if(BluePlaneSprite.lives > 0 && EnemyManager.enemiesEscaped < 8) {
+		timer += Gdx.graphics.getDeltaTime();
+
+		//System.out.println("Should Play : " + shouldPlay());
+		//System.out.println("Should Lose : " + shouldLose());
+
+		if(shouldPlay()) {
 			ScreenUtils.clear(1, 1, 1, 1);
 			batch.begin();
-			backgroundOcean.updateAndRender(Gdx.graphics.getDeltaTime(), batch);
-			planeSprite.update();
-			//boss.update();
-			ui.render();
-			powerUps.update();
+			updateManagers();
 			isAbleToReset = false;
 			world.step(1 / 60f, 12, 2);
 			world.step(1 / 60f, 12, 2);
@@ -107,16 +132,14 @@ public class Plane extends Game {
 			removeAllInactive();
 			batch.end();
 		}else{
-			Gdx.gl.glClearColor(.25f, 0, 0, 1);
-			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
-			batch.begin();
-			batch.draw(new Texture("GameOverScreen.jpeg"),-150f,00f,800f,480f);
-			font.draw(batch, "Game Over", Gdx.graphics.getWidth() * .35f, Gdx.graphics.getHeight() * .75f);
-			batch.end();
+			if(shouldLose()) {
+				showEndScreen();
+			} else if(shouldWin()) {
+				showWinScreen();
+			}
 		}
 
-		if(Gdx.input.isKeyPressed(Input.Keys.Y)) {
+		if(Gdx.input.isKeyJustPressed(Input.Keys.Y)) {
 			batch.begin();
 			batch.dispose();
 			batch.end();
@@ -124,7 +147,48 @@ public class Plane extends Game {
 
 	}
 
+	public void updateManagers(){
+		backgroundOcean.updateAndRender(Gdx.graphics.getDeltaTime(), batch);
+		planeSprite.update();
+		//boss.update();
+		ui.render();
+		powerUps.update();
+	}
 
+	public void showEndScreen(){
+		Gdx.gl.glClearColor(.25f, 0, 0, 1);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		batch.begin();
+		batch.draw(new Texture("GameOverScreen.jpeg"), -150f, 00f, 800f, 480f);
+		font.draw(batch, "Game Over", Gdx.graphics.getWidth() * .35f, Gdx.graphics.getHeight() * .75f);
+		restartButton.update();
+		if(mouseManager.checkMouseButtonClick(restartButton)){
+			restartButton.clickButton();
+			restart();
+		}
+		batch.end();
+	}
+
+	public void showWinScreen(){
+		Gdx.gl.glClearColor(.25f, 0, 0, 1);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		batch.begin();
+		batch.draw(new Texture("WinScreen.png"), -50f, 00f, 800f, 480f);
+		font.draw(batch, "You win", Gdx.graphics.getWidth() * .35f, Gdx.graphics.getHeight() * .75f);
+		restartButton.update();
+		if(mouseManager.checkMouseButtonClick(restartButton)){
+			restartButton.clickButton();
+			restart();
+		}
+		batch.end();
+	}
+
+	public void restart(){
+		planeSprite.restart();
+		boss.restart();
+		powerUps.restart();
+		timer = 0;
+	}
 
 	public void removeAllInactive(){
 		world.getBodies(removeNonMovingBodies);

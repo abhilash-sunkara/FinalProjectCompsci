@@ -25,7 +25,7 @@ public class BluePlaneSprite {
     private boolean shotSecond;
     private boolean shotThird;
     private float burstTimer;
-    private float burstDelay = 0.25f;
+    private float burstDelay = 0.075f;
 
     private FIREMODE firemode = FIREMODE.BURST;
     private float machineGunTimeLimit = 5f;
@@ -58,6 +58,14 @@ public class BluePlaneSprite {
 
     EnemyManager enemyManager;
 
+    public float invincibilityTime = 1f;
+    public float invincibilityTimer = 0f;
+
+    private final float boundTopY = 440;
+    private final float boundBottomY = 40;
+    private final float boundRightX = 600;
+    private final float boundLeftX = 36;
+
     public BluePlaneSprite(String imgFile, SpriteBatch batch, World world, ArrayList<Body> ar, EnemyManager em){
         sprite = new Sprite(new Texture(Gdx.files.internal(imgFile)));
         renderer = batch;
@@ -67,6 +75,8 @@ public class BluePlaneSprite {
         planeBody.setUserData(sprite);
         planeBody.setLinearDamping(2.0f);
         planeBody.setUserData(this);
+
+        planeBody.setTransform(50, 50, 0);
 
         CircleShape cs = new CircleShape();
         cs.setRadius(6f);
@@ -88,16 +98,16 @@ public class BluePlaneSprite {
     }
 
     public void planeMovement(){
-        if(Gdx.input.isKeyPressed(Input.Keys.RIGHT) && planeBody.getLinearVelocity().x < MAX_VEL){
+        if(Gdx.input.isKeyPressed(Input.Keys.RIGHT) && planeBody.getLinearVelocity().x < MAX_VEL && planeBody.getPosition().x < boundRightX){
             planeBody.applyForceToCenter(addedForce, 0f, true);
         }
-        if(Gdx.input.isKeyPressed(Input.Keys.LEFT) && planeBody.getLinearVelocity().x > -MAX_VEL) {
+        if(Gdx.input.isKeyPressed(Input.Keys.LEFT) && planeBody.getLinearVelocity().x > -MAX_VEL && planeBody.getPosition().x > boundLeftX) {
             planeBody.applyForceToCenter(-addedForce, 0f, true);
         }
-        if(Gdx.input.isKeyPressed(Input.Keys.UP) && planeBody.getLinearVelocity().y < MAX_VEL) {
+        if(Gdx.input.isKeyPressed(Input.Keys.UP) && planeBody.getLinearVelocity().y < MAX_VEL && planeBody.getPosition().y < boundTopY) {
             planeBody.applyForceToCenter(0f, addedForce, true);
         }
-        if (Gdx.input.isKeyPressed(Input.Keys.DOWN) && planeBody.getLinearVelocity().y > -MAX_VEL){
+        if (Gdx.input.isKeyPressed(Input.Keys.DOWN) && planeBody.getLinearVelocity().y > -MAX_VEL && planeBody.getPosition().y > boundBottomY){
             planeBody.applyForceToCenter(0f, -addedForce, true);
         }
 
@@ -202,13 +212,17 @@ public class BluePlaneSprite {
         planeMovement();
         weaponControl();
         setSpeed();
+        invincibilityTimer += Gdx.graphics.getDeltaTime();
+        if(invincibilityTimer < invincibilityTime){
+            lives = 4;
+        }
         if(isWingManActive){
             wingman.update();
         }
         sprite.draw(renderer);
         reset();
-        if(Gdx.input.isKeyPressed(Input.Keys.Q)){
-            lives = 1;
+        if(Gdx.input.isKeyJustPressed(Input.Keys.Q)){
+            lives -= 1;
         }
     }
 
@@ -268,6 +282,14 @@ public class BluePlaneSprite {
                 extraSpeedTimer -= extraSpeedTimeLimit;
             }
         }
+    }
+
+    public void restart(){
+        BluePlaneSprite.lives = 4;
+        shouldReset = true;
+        isWingManActive = false;
+        invincibilityTimer = 0;
+        planeBody.setTransform(50, 50, 0);
     }
 
     public void clearEnemies(){

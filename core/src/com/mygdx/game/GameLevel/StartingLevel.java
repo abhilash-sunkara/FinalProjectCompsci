@@ -15,6 +15,9 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.mygdx.game.Background.Button;
+import com.mygdx.game.Background.RestartButton;
+import com.mygdx.game.Managers.MouseManager;
 
 
 public class StartingLevel extends Plane {
@@ -41,6 +44,10 @@ public class StartingLevel extends Plane {
     private Label outputLabel;
 
     private TextButton button;
+
+    public RestartButton rb;
+
+    public MouseManager mm;
 
     @Override
     public void create() {
@@ -103,20 +110,23 @@ public class StartingLevel extends Plane {
         stage.addActor(outputLabel);
 
         stage.addActor(button);
+
+        rb = new RestartButton(436, 200, 160, 80, new Texture(Gdx.files.internal("ButtonUp.png")), new Texture(Gdx.files.internal("ButtonDown.png")), batch, 200, 80, 240, 80);
+        mm = new MouseManager();
     }
 
  
 
 
     public void show(){
-        if(renderPlane)
+        if(!super.renderStartScene)
             return;
 
         Gdx.input.setInputProcessor(new InputAdapter() {
             @Override
             public boolean keyDown(int keyCode) {
                 if (keyCode == Input.Keys.ENTER) {
-                    renderPlane = true;
+                    renderStartScene = false;
                     propBgMusic = Gdx.audio.newMusic(Gdx.files.internal("prop.mp3"));
 		            propBgMusic.setLooping(true);
                     propBgMusic.setVolume(0.5f);
@@ -132,26 +142,23 @@ public class StartingLevel extends Plane {
 
 
     public void render(){
-
-        show();
-
-        stage.act();
-        stage.draw();
-
-        
-        
-
-        elapsed += Gdx.graphics.getDeltaTime();
-        super.batch.begin();
-        super.batch.draw(animation.getKeyFrame(elapsed),-500f,-200f);
-        
-        button.draw(super.batch, 1);
-        outputLabel.draw(super.batch, 1);
-
-        font.draw(super.batch, "Press Enter To Start", Gdx.graphics.getWidth() * .15f, Gdx.graphics.getHeight() * .75f);
-        super.batch.end();
-
-        if(renderPlane) {
+        if(super.renderStartScene) {
+            show();
+            stage.act();
+            stage.draw();
+            elapsed += Gdx.graphics.getDeltaTime();
+            super.batch.begin();
+            super.batch.draw(animation.getKeyFrame(elapsed), -500f, -200f);
+            //button.draw(super.batch, 1);
+            //outputLabel.draw(super.batch, 1);
+            restartButton.update();
+            if(mouseManager.checkMouseButtonClick(restartButton)){
+                restartButton.clickButton();
+                renderStartScene = false;
+            }
+            font.draw(super.batch, "Press Enter To Start", Gdx.graphics.getWidth() * .15f, Gdx.graphics.getHeight() * .75f);
+            super.batch.end();
+        } else {
             super.render();
         }
 

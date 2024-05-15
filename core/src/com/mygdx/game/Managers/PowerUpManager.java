@@ -166,6 +166,12 @@ public class PowerUpManager {
 
     }
 
+    public void restart(){
+        powerUps.clear();
+        spawnedPowerUps.clear();
+        initializePowerUps();
+    }
+
     public enum Spawnables{
         WINGMAN, MACHINEGUN, EXTRASPEED, CARPETBOMB, EXTRALIFE
     }

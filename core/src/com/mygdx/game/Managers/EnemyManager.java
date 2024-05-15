@@ -58,6 +58,12 @@ public class EnemyManager{
         }
     }
 
+    public void restart(){
+        clearAllEnemies();
+        EnemyManager.enemiesEscaped = 0;
+    }
+
+
     public void clearAllEnemies(){
         for(int i = 0; i < enemies.size(); i++){
             enemies.get(i).destroy();
