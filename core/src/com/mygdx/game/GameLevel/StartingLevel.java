@@ -8,12 +8,12 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 
 
@@ -42,13 +42,13 @@ public class StartingLevel extends Plane {
 
     private TextButton button;
 
-    private Texture startTexture;
+    private Texture buttonImage;
 
     @Override
     public void create() {
         super.create();
 
-        startTexture = new Texture("start.png");
+        buttonImage = new Texture("start.png");
 
         textureRegions = new TextureRegion[24];
 
@@ -86,19 +86,15 @@ public class StartingLevel extends Plane {
         button.setPosition(400-125, 240);
         button.setTransform(true);
         button.setScale(1f);
-        button.addListener(new InputListener(){
-            public void touchUp(InputEvent event, float x, float y, int pointer, int buttonNum){
-                outputLabel.setText("press a button");
-            }
 
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int buttonNum){
-                outputLabel.setText("pressed button");
-                System.out.println("ouch");
-                Gdx.app.log("button", "ouch");
-                return true;
-            }
-        });
 
+        outputLabel = new Label("Press a Button", mySkin, "black");
+        outputLabel.setSize(100, 30);
+        outputLabel.setPosition(400 - 125, 240);
+        outputLabel.setAlignment(1);
+        //stage.addActor(outputLabel);
+
+        stage.addActor(button);
     }
 
  
@@ -116,11 +112,22 @@ public class StartingLevel extends Plane {
                     propBgMusic = Gdx.audio.newMusic(Gdx.files.internal("prop.mp3"));
 		            propBgMusic.setLooping(true);
                     propBgMusic.setVolume(0.5f);
-		            //propBgMusic.play();
+		            propBgMusic.play();
                 }
                 return true;
             }
         });
+
+        boolean inRightPosition = ((Gdx.input.getX() > 80 && Gdx.input.getX() < 557) && (Gdx.input.getY() > 237 && Gdx.input.getY() < 322));
+        if(inRightPosition && Gdx.input.isTouched()) {
+            renderPlane = true;
+            propBgMusic = Gdx.audio.newMusic(Gdx.files.internal("prop.mp3"));
+            propBgMusic.setLooping(true);
+            propBgMusic.setVolume(0.5f);
+            propBgMusic.play();
+            System.out.println("Hello");
+        }
+
     }
 
 
@@ -129,28 +136,32 @@ public class StartingLevel extends Plane {
 
     public void render(){
 
+
+
         show();
-
-        stage.act();
-        stage.draw();
-
+        //80 237
+        //557 322
         
-        
+
 
         elapsed += Gdx.graphics.getDeltaTime();
         super.batch.begin();
-        
+        stage.act();
+        stage.draw();
         super.batch.draw(animation.getKeyFrame(elapsed),-500f,-200f);
         
-        
+
 
         font.draw(super.batch, "Press Enter To Start", Gdx.graphics.getWidth() * .15f, Gdx.graphics.getHeight() * .75f);
-        super.batch.draw(startTexture, Gdx.graphics.getWidth() * .15f, Gdx.graphics.getHeight() * .75f);
+
+        super.batch.draw(buttonImage,-65f,60f,buttonImage.getWidth()*.8f,buttonImage.getHeight()*.5f);
+
         super.batch.end();
 
         if(renderPlane) {
             super.render();
         }
+
 
     }
 }

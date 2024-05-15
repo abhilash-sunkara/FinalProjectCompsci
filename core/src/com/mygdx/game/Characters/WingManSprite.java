@@ -14,20 +14,20 @@ import java.util.ArrayList;
 
 public class WingManSprite {
 
-    private Sprite sprite;
-    private SpriteBatch renderer;
-    private BodyDef bf = new BodyDef();
-    private Body planeBody;
-    private World world;
+    private final Sprite sprite;
+    private final SpriteBatch renderer;
+    private final BodyDef bf = new BodyDef();
+    private final Body planeBody;
+    private final World world;
 
-    private ArrayList<Body> bodyRemover;
+    private final ArrayList<Body> bodyRemover;
     ArrayList<Bullet> bulletManager = new ArrayList<>();
     float timeSeconds = 0f;
     float weaponFireDelay = 0.1f;
     private boolean canShoot = true;
     
-    private BluePlaneSprite player;
-    private float timeLimit = 2f;
+    private final BluePlaneSprite player;
+    private final float timeLimit = 2f;
     private float limitCounter = 0f;
     
 

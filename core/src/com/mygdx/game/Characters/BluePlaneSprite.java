@@ -19,16 +19,16 @@ import java.util.ArrayList;
 public class BluePlaneSprite {
 
     public Sprite sprite;
-    private SpriteBatch renderer;
+    private final SpriteBatch renderer;
     ArrayList<Bullet> bulletManager = new ArrayList<>();
     private boolean shotFirst;
     private boolean shotSecond;
     private boolean shotThird;
     private float burstTimer;
-    private float burstDelay = 0.25f;
+    private final float burstDelay = 0.25f;
 
     private FIREMODE firemode = FIREMODE.BURST;
-    private float machineGunTimeLimit = 5f;
+    private final float machineGunTimeLimit = 5f;
     private float machineGunTimeSeconds = 0f;
 
     float timeSeconds = 0f;
@@ -41,17 +41,17 @@ public class BluePlaneSprite {
     float extraSpeedTimeLimit = 3f;
     float extraSpeedTimer = 0f;
     private boolean canShoot = true;
-    private BodyDef bf = new BodyDef();
-    private Body planeBody;
+    private final BodyDef bf = new BodyDef();
+    private final Body planeBody;
     private float MAX_VEL = 2000f;
     private float addedForce = 400;
-    private World world;
-    private Music browningMusic;
+    private final World world;
+    private final Music browningMusic;
 
     public static int lives = 4;
     private boolean shouldReset = false;
 
-    private ArrayList<Body> bodyRemover;
+    private final ArrayList<Body> bodyRemover;
 
     public boolean isWingManActive = false;
     WingManSprite wingman;

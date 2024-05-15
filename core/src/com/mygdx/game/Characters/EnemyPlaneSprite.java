@@ -2,8 +2,10 @@ package com.mygdx.game.Characters;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Timer;
@@ -14,24 +16,28 @@ import java.util.ArrayList;
 
 public class EnemyPlaneSprite {
 
-    private Sprite sprite;
-    private SpriteBatch renderer;
-    private BodyDef bd = new BodyDef();
-    private World w;
+    private final Sprite sprite;
+    private final SpriteBatch renderer;
+    private final BodyDef bd = new BodyDef();
+    private final World w;
 
     public Body body;
 
-    private float MAX_VEL = 20f;
+    private final float MAX_VEL = 20f;
 
     private float timer = 0f;
-    private float bulletTimer = 0f;
-    private ArrayList<EnemyBullet> enemyBullets = new ArrayList<>();
+    private final float bulletTimer = 0f;
+    private final ArrayList<EnemyBullet> enemyBullets = new ArrayList<>();
 
-    private ArrayList<Body> bodyRemover;
+    private final ArrayList<Body> bodyRemover;
 
     public boolean isActive = true;
 
-    private Fixture f;
+    public boolean exploding = false;
+
+    private final Fixture f;
+
+    public Animation<TextureRegion> explosion;
 
     public EnemyPlaneSprite(String imgFile, SpriteBatch batch, World world, ArrayList<Body> ar){
         sprite = new Sprite(new Texture(Gdx.files.internal(imgFile)));
@@ -58,6 +64,15 @@ public class EnemyPlaneSprite {
 
 
         bodyRemover = ar;
+
+        TextureRegion[] textureRegions = new TextureRegion[12];
+
+        for(int i = 0; i < textureRegions.length;i++){
+            textureRegions[i] = new TextureRegion(new Texture("explosion/2216f029-f689-46e0-84c5-c51cf89bbc38-" + i + ".png"));
+        }
+
+        explosion = new Animation<>(.1175F,textureRegions);
+        explosion.setPlayMode(Animation.PlayMode.NORMAL);
     }
 
     public void enemyMovement(){
@@ -114,7 +129,8 @@ public class EnemyPlaneSprite {
 
     public void destroy(){
         isActive = false;
-        f.setSensor(true);
+        exploding = true;
+      //  f.setSensor(true);
 
         for(EnemyBullet eb : enemyBullets){
             eb.destroy();
@@ -136,4 +152,11 @@ public class EnemyPlaneSprite {
         return body.getPosition().y < 0;
 
     }
+
+    public Vector2 getPosition(){
+        return body.getPosition();
+    }
 }
+
+
+

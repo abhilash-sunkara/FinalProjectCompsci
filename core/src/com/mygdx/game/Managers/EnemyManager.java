@@ -5,20 +5,21 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.utils.TimeUtils;
 import com.mygdx.game.Characters.EnemyPlaneSprite;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class EnemyManager{
-    private ArrayList<EnemyPlaneSprite> enemies; 
+    private final ArrayList<EnemyPlaneSprite> enemies;
     SpriteBatch batch;
     float time;
-    private World world;
-    private float[][] spawnPositions = {{100, 300, 500}, {200, 400}, {300}};
+    private final World world;
+    private final float[][] spawnPositions = {{100, 300, 500}, {200, 400}, {300}};
     private int spawnWave = 0;
 
-    private ArrayList<Body> bodyRemover;
+    private final ArrayList<Body> bodyRemover;
 
     public static int enemiesEscaped = 0;
 
@@ -45,6 +46,10 @@ public class EnemyManager{
                 bodyRemover.add(enemies.get(i).body);
                 enemies.remove(i);
                 i--;
+            } else if (enemies.get(i).exploding) {
+                batch.draw(enemies.get(i).explosion.getKeyFrame(Gdx.graphics.getDeltaTime()),enemies.get(i).getPosition().x,enemies.get(i).getPosition().y);
+                if(enemies.get(i).explosion.isAnimationFinished((float) TimeUtils.millis()))
+                    enemies.get(i).exploding = false;
             } else {
                 enemies.get(i).update();
                 if(enemies.get(i).isOutOfBounds()){

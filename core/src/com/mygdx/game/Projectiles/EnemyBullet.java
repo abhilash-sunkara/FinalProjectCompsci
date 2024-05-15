@@ -11,10 +11,10 @@ public class EnemyBullet {
     public Sprite sprite;
     public SpriteBatch renderer;
     public boolean isActive = true;
-    private BodyDef bd = new BodyDef();
-    private World world;
+    private final BodyDef bd = new BodyDef();
+    private final World world;
     public Body body;
-    private Fixture f;
+    private final Fixture f;
 
     public EnemyBullet(String imgFile, SpriteBatch spriteBatch, World world){
         sprite = new Sprite(new Texture(Gdx.files.internal(imgFile)));
@@ -62,7 +62,7 @@ public class EnemyBullet {
     public void destroy(){
         isActive = false;
         //System.out.println("destroyed bullet");
-        f.setSensor(true);
+       // f.setSensor(true);
     }
 
     public float getVelocity(){

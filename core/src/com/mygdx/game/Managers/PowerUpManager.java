@@ -14,24 +14,24 @@ import com.badlogic.gdx.utils.Queue;
 
 public class PowerUpManager {
 
-    private SpriteBatch batch;
-    private World world;
+    private final SpriteBatch batch;
+    private final World world;
 
 
-    private Array<PowerUp> spawnedPowerUps = new Array<>();
+    private final Array<PowerUp> spawnedPowerUps = new Array<>();
 
-    private Queue<Spawnables> powerUps = new Queue<>();
+    private final Queue<Spawnables> powerUps = new Queue<>();
 
 
-    private Texture WingManTexture = new Texture(Gdx.files.internal("ship_0020.png"));
-    private Texture MachineGunTexture = new Texture(Gdx.files.internal("MachineGun.png"));
-    private Texture ExtraSpeedTexture = new Texture(Gdx.files.internal("ExtraSpeed.png"));
-    private Texture CarpetBombTexture = new Texture(Gdx.files.internal("CarpetBomb.png"));
-    private Texture ExtraLifeTexture = new Texture(Gdx.files.internal("ExtraLife.png"));
+    private final Texture WingManTexture = new Texture(Gdx.files.internal("ship_0020.png"));
+    private final Texture MachineGunTexture = new Texture(Gdx.files.internal("MachineGun.png"));
+    private final Texture ExtraSpeedTexture = new Texture(Gdx.files.internal("ExtraSpeed.png"));
+    private final Texture CarpetBombTexture = new Texture(Gdx.files.internal("CarpetBomb.png"));
+    private final Texture ExtraLifeTexture = new Texture(Gdx.files.internal("ExtraLife.png"));
     private boolean needToUpdateDisplay = true;
-    private Sprite[] powerUpDisplay = {new Sprite(WingManTexture), new Sprite(WingManTexture), new Sprite(WingManTexture), new Sprite(WingManTexture)};
+    private final Sprite[] powerUpDisplay = {new Sprite(WingManTexture), new Sprite(WingManTexture), new Sprite(WingManTexture), new Sprite(WingManTexture)};
 
-    private float spawnDelay = 5f;
+    private final float spawnDelay = 5f;
     private float spawnTime;
 
     private boolean shouldSpawnExtraLife = false;
