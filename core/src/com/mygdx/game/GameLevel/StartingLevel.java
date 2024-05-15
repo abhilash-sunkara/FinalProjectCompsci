@@ -8,7 +8,10 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
@@ -45,6 +48,8 @@ public class StartingLevel extends Plane {
 
     private TextButton button;
 
+    private Texture buttonImage;
+
     public RestartButton rb;
 
     public MouseManager mm;
@@ -53,6 +58,7 @@ public class StartingLevel extends Plane {
     public void create() {
         super.create();
 
+        buttonImage = new Texture("start.png");
 
         textureRegions = new TextureRegion[24];
 
@@ -90,24 +96,13 @@ public class StartingLevel extends Plane {
         button.setPosition(400-125, 240);
         button.setTransform(true);
         button.setScale(1f);
-        button.addListener(new InputListener(){
-            public void touchUp(InputEvent event, float x, float y, int pointer, int buttonNum){
-                outputLabel.setText("press a button");
-            }
 
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int buttonNum){
-                outputLabel.setText("pressed button");
-                System.out.println("ouch");
-                Gdx.app.log("button", "ouch");
-                return true;
-            }
-        });
 
         outputLabel = new Label("Press a Button", mySkin, "black");
         outputLabel.setSize(100, 30);
         outputLabel.setPosition(400 - 125, 240);
         outputLabel.setAlignment(1);
-        stage.addActor(outputLabel);
+        //stage.addActor(outputLabel);
 
         stage.addActor(button);
 
@@ -130,7 +125,7 @@ public class StartingLevel extends Plane {
                     propBgMusic = Gdx.audio.newMusic(Gdx.files.internal("prop.mp3"));
 		            propBgMusic.setLooping(true);
                     propBgMusic.setVolume(0.5f);
-		            //propBgMusic.play();
+		            propBgMusic.play();
                 }
                 return true;
             }
@@ -161,6 +156,7 @@ public class StartingLevel extends Plane {
         } else {
             super.render();
         }
+
 
     }
 }

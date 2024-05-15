@@ -15,16 +15,16 @@ import java.util.ArrayList;
 
 public class UserInterfaceManager {
 
-    private SpriteBatch batch;
+    private final SpriteBatch batch;
     BitmapFont font;
 
     private int playerLives;
     private Sprite playerLifeMeter;
-    private Array<Texture> playerLifeImages = new Array<>();
+    private final Array<Texture> playerLifeImages = new Array<>();
 
     private int escapedEnemies;
     private Sprite enemyCounter;
-    private Array<Texture> enemyCounterImages = new Array<>();
+    private final Array<Texture> enemyCounterImages = new Array<>();
 
     public UserInterfaceManager(SpriteBatch sb){
         batch = sb;
