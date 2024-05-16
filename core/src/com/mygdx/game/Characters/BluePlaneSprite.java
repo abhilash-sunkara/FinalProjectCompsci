@@ -24,6 +24,8 @@ public class BluePlaneSprite {
     private boolean shotFirst;
     private boolean shotSecond;
     private boolean shotThird;
+    private boolean shotFourth;
+    private boolean shotFifth;
     private float burstTimer;
     private float burstDelay = 0.075f;
 
@@ -47,6 +49,7 @@ public class BluePlaneSprite {
     private float addedForce = 400;
     private final World world;
     private final Music browningMusic;
+    private final Music burstMusic;
 
     public static int lives = 4;
     private boolean shouldReset = false;
@@ -93,6 +96,7 @@ public class BluePlaneSprite {
 
         wingman = new WingManSprite("ship_0008.png", batch, world, this, bodyRemover);
         browningMusic = Gdx.audio.newMusic(Gdx.files.internal("browning.mp3"));
+        burstMusic = Gdx.audio.newMusic(Gdx.files.internal("burst.mp3"));
 
         enemyManager = em;
     }
@@ -165,7 +169,7 @@ public class BluePlaneSprite {
             shotFirst = true;
             canShoot = false;
             burstTimer = 0;
-            browningMusic.play();
+            burstMusic.play();
         }
 
         if(shotFirst && burstTimer > burstDelay){
@@ -182,13 +186,29 @@ public class BluePlaneSprite {
             burstTimer = 0;
         }
 
-        if(shotThird){
+        if(shotThird && burstTimer > burstDelay){
+            bulletManager.add(new Bullet("tracer.png", renderer, world).setPosition(sprite.getX() + 267, sprite.getY() + 200));
+            shotThird = false;
+            shotFourth = true;
+            burstTimer = 0;
+        }
+
+        if(shotFourth && burstTimer > burstDelay){
+            bulletManager.add(new Bullet("tracer.png", renderer, world).setPosition(sprite.getX() + 267, sprite.getY() + 200));
+            shotFourth = false;
+            shotFifth = true;
+            burstTimer = 0;
+        }
+
+        if(shotFifth){
             shotFirst = false;
             shotSecond = false;
             shotThird = false;
+            shotFourth = false;
+            shotFifth = false;
             timeSeconds = 0;
             canShoot = false;
-            browningMusic.pause();
+            burstMusic.stop();
         }
 
         if(timeSeconds > weaponFireDelay){
