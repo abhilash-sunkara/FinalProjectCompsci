@@ -7,6 +7,7 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.mygdx.game.Characters.EnemyPlaneSprite;
+import com.mygdx.game.GameLevel.Plane;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -37,20 +38,22 @@ public class EnemyManager{
         if(time > 2){
             spawnWave = (int) (Math.random() * 3);
             for(int i = 0; i < spawnPositions[spawnWave].length; i++){
-                enemies.add(new EnemyPlaneSprite("ship_0001.png", batch, world, bodyRemover).setStartPos(spawnPositions[spawnWave][i], 440));
+               int rand = (int)(Math.random()*6) + 1;
+               boolean canMove = rand > 2 ? false : true;
+                enemies.add(new EnemyPlaneSprite("ship_0001.png", batch, world, bodyRemover, canMove).setStartPos(spawnPositions[spawnWave][i], 440));
             }
             time -= 2;
         }
         for(int i = 0; i < enemies.size(); i++){
             if(!enemies.get(i).isActive){
+ //               Plane.explode = true;
+ //               Plane.explosionLocationx = enemies.get(i).getPosition().x;
+ //               Plane.explosionLocationy = enemies.get(i).getPosition().y;
                 bodyRemover.add(enemies.get(i).body);
                 enemies.remove(i);
+
                 i--;
-            } else if (enemies.get(i).exploding) {
-                batch.draw(enemies.get(i).explosion.getKeyFrame(Gdx.graphics.getDeltaTime()),enemies.get(i).getPosition().x,enemies.get(i).getPosition().y);
-                if(enemies.get(i).explosion.isAnimationFinished((float) TimeUtils.millis()))
-                    enemies.get(i).exploding = false;
-            } else {
+            }  else {
                 enemies.get(i).update();
                 if(enemies.get(i).isOutOfBounds()){
                     bodyRemover.add(enemies.get(i).body);

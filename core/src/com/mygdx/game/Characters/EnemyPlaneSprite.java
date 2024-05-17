@@ -39,7 +39,15 @@ public class EnemyPlaneSprite {
 
     public Animation<TextureRegion> explosion;
 
-    public EnemyPlaneSprite(String imgFile, SpriteBatch batch, World world, ArrayList<Body> ar){
+    private boolean outOfRange = true;
+
+    private float X_VEL = 20;
+
+    private float pastTime;
+
+    private float elapsedTime;
+
+    public EnemyPlaneSprite(String imgFile, SpriteBatch batch, World world, ArrayList<Body> ar, boolean canMove){
         sprite = new Sprite(new Texture(Gdx.files.internal(imgFile)));
         renderer = batch;
         sprite.setFlip(false, true);
@@ -73,10 +81,23 @@ public class EnemyPlaneSprite {
 
         //explosion = new Animation<>(.1175F,textureRegions);
         //explosion.setPlayMode(Animation.PlayMode.NORMAL);
+
+        if(canMove){
+            int rand = (int)(Math.random() * 2) + 1;
+            X_VEL = rand > 1 ? 20 : -20;
+        }else{
+            X_VEL = 0;
+        }
     }
 
     public void enemyMovement(){
-        body.setLinearVelocity(0, -MAX_VEL);
+        body.setLinearVelocity(X_VEL, -MAX_VEL);
+        elapsedTime += Gdx.graphics.getDeltaTime();
+        System.out.println(elapsedTime);
+        if((Math.abs(Math.abs(body.getPosition().x)-0) < 1 || Math.abs(Math.abs(body.getPosition().x)-800) < 1) && elapsedTime - pastTime > .5 ) {
+            pastTime = elapsedTime;
+            X_VEL = -X_VEL;
+        }
         sprite.setPosition(body.getPosition().x, body.getPosition().y);
     }
 
