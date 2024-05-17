@@ -11,21 +11,50 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFont
 import com.badlogic.gdx.utils.Array;
 import com.mygdx.game.Characters.BluePlaneSprite;
 
-import java.util.ArrayList;
-
+/**
+ * UI obejct that shows player lives and enemies that have escaped
+ */
 public class UserInterfaceManager {
 
+    /**
+     * Sprite batch to render textures
+     */
     private final SpriteBatch batch;
+    /**
+     * Font object for text
+     */
     BitmapFont font;
 
+    /**
+     * Tracks player lives
+     */
     private int playerLives;
+    /**
+     * Sprite that displays player lives
+     */
     private Sprite playerLifeMeter;
+    /**
+     * Array that holds all images for player lives
+     */
     private final Array<Texture> playerLifeImages = new Array<>();
 
+    /**
+     * Tracks escaped enemies
+     */
     private int escapedEnemies;
+    /**
+     * Sprite that displays escaped enemies
+     */
     private Sprite enemyCounter;
+    /**
+     * Array that holds all images for enemy counter
+     */
     private final Array<Texture> enemyCounterImages = new Array<>();
 
+    /**
+     * UI contstructor
+     * @param sb SpriteBatch used for rendering images
+     */
     public UserInterfaceManager(SpriteBatch sb){
         batch = sb;
         generateFont();
@@ -33,6 +62,9 @@ public class UserInterfaceManager {
         generateEnemyCounterImages();
     }
 
+    /**
+     * Generates images
+     */
     public void generateFont(){
         FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("monogram.ttf"));
         FreeTypeFontParameter params = new FreeTypeFontParameter();
@@ -50,8 +82,9 @@ public class UserInterfaceManager {
         font.setColor(0, 0, 0, 1);
     }
 
-
-
+    /**
+     * Creates textures for player life images
+     */
     public void generatePlayerLifeImages(){
         for(int i = 0; i < 5; i++){
             playerLifeImages.add(new Texture(Gdx.files.internal("PlayerLifeMeter/PlayerLifeMeter" + i + ".png")));
@@ -61,7 +94,9 @@ public class UserInterfaceManager {
         playerLifeMeter.setScale(4, 4);
         playerLifeMeter.setPosition(50, 12);
     }
-
+    /**
+     * Creates textures for enemy counter images
+     */
     public void generateEnemyCounterImages(){
         for(int i = 0; i < 9; i++){
             enemyCounterImages.add(new Texture(Gdx.files.internal("EnemyCounterImages/EnemyCounter" + i + ".png")));
@@ -73,11 +108,17 @@ public class UserInterfaceManager {
 
     }
 
+    /**
+     * updates and draws player lives and enemy counter
+     */
     public void render(){
         renderPlayerLives();
         renderEnemyCounter();
     }
 
+    /**
+     * draws player lives sprite
+     */
     public void renderPlayerLives(){
         //System.out.println(playerLives);
         //System.out.println(BluePlaneSprite.lives);
@@ -88,6 +129,9 @@ public class UserInterfaceManager {
         playerLifeMeter.draw(batch);
     }
 
+    /**
+     * draws enemy counter sprite
+     */
     public void renderEnemyCounter(){
         if(escapedEnemies != EnemyManager.enemiesEscaped && EnemyManager.enemiesEscaped < 8){
             escapedEnemies = EnemyManager.enemiesEscaped;

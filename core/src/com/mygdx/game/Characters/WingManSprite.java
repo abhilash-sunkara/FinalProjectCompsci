@@ -12,25 +12,75 @@ import com.mygdx.game.Projectiles.Bullet;
 
 import java.util.ArrayList;
 
+/**
+ * Wingman object that spawns when {@link com.mygdx.game.PowerUps.WingMan} is collected
+ */
 public class WingManSprite {
 
+    /**
+     * Sprite object that handles rendering and images
+     */
     private final Sprite sprite;
+    /**
+     * SpriteBatch object to render sprite in main scene
+     */
     private final SpriteBatch renderer;
+    /**
+     * Body Definition for collisions
+     */
     private final BodyDef bf = new BodyDef();
+    /**
+     * Body for collision detection and movement
+     */
     private final Body planeBody;
+    /**
+     * World object to track active bodies
+     */
     private final World world;
 
+    /**
+     * Body remover to remove inactive bullets
+     */
     private final ArrayList<Body> bodyRemover;
+    /**
+     * Bullet Manager that tracks active fired bullets
+     */
     ArrayList<Bullet> bulletManager = new ArrayList<>();
+    /**
+     * Timer that tracks when wingman can shoot
+     */
     float timeSeconds = 0f;
+    /**
+     * Time between individual shots
+     */
     float weaponFireDelay = 0.1f;
+    /**
+     * Tracks if wingman is able to shoot bullets
+     */
     private boolean canShoot = true;
-    
-    private final BluePlaneSprite player;
-    private final float timeLimit = 2f;
-    private float limitCounter = 0f;
-    
 
+    /**
+     * Player object reference for movement tracking
+     */
+    private final BluePlaneSprite player;
+    /**
+     * Time limit for how long wingman is active
+     */
+    private final float timeLimit = 2f;
+    /**
+     * Tracks how long wingman has been active for
+     */
+    private float limitCounter = 0f;
+
+
+    /**
+     * WingManSprite constructor
+     * @param imgFile Image filepath for render image
+     * @param batch SpriteBatch for rendering in main scene
+     * @param world World that tracks all active bodies
+     * @param p Player object
+     * @param br BodyRemover arraylist
+     */
     public WingManSprite(String imgFile, SpriteBatch batch, World world, BluePlaneSprite p, ArrayList<Body> br){
 
         sprite = new Sprite(new Texture(Gdx.files.internal(imgFile)));
@@ -58,6 +108,9 @@ public class WingManSprite {
         player = p;
     }
 
+    /**
+     * plane movement based on player position
+     */
     public void planeMovement(){
         if(Plane.isAbleToReset){
             planeBody.setTransform(player.getPos().x - 16, player.getPos().y - 16, 0);
@@ -65,6 +118,9 @@ public class WingManSprite {
         sprite.setCenter(planeBody.getPosition().x, planeBody.getPosition().y);
     }
 
+    /**
+     * Autonomous weapon control
+     */
     public void weaponControl(){
         timeSeconds += Gdx.graphics.getDeltaTime();
 
@@ -88,7 +144,10 @@ public class WingManSprite {
             }
         }
     }
-    
+
+    /**
+     * Tracks time limit and automatically despawns wingman if it is active for too long
+     */
     public void timeLimitDespawn(){
         if(player.getIsWingmanActive()){
             limitCounter += Gdx.graphics.getDeltaTime();
@@ -100,6 +159,10 @@ public class WingManSprite {
         }
     }
 
+    /**
+     * Called in player object every frame
+     * Controls movement, timers and weapon control
+     */
     public void update(){
         planeMovement();
         sprite.draw(renderer);
@@ -107,6 +170,9 @@ public class WingManSprite {
         timeLimitDespawn();
     }
 
+    /**
+     * Removes all active bullets when wingman despawns
+     */
     public void deactivate(){
         bulletManager.clear();
     }

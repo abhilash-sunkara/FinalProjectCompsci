@@ -7,6 +7,9 @@ import com.badlogic.gdx.physics.box2d.Manifold;
 import com.mygdx.game.Characters.BluePlaneSprite;
 import com.mygdx.game.PowerUps.*;
 
+/**
+ * Controls player collisions with power ups
+ */
 public class PowerUpCollision implements ContactListener {
     @Override
     public void beginContact(Contact contact) {

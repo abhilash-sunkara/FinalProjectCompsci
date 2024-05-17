@@ -8,6 +8,9 @@ import com.mygdx.game.Characters.BluePlaneSprite;
 import com.mygdx.game.Characters.EnemyPlaneSprite;
 import com.mygdx.game.Projectiles.EnemyBullet;
 
+/**
+ * Controls player collisions with enemy objects
+ */
 public class EnemyPlaneCollision implements ContactListener {
     @Override
     public void beginContact(Contact contact) {

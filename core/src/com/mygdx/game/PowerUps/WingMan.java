@@ -3,6 +3,9 @@ package com.mygdx.game.PowerUps;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.physics.box2d.*;
 
+/**
+ * WingMan powerup class
+ */
 public class WingMan extends PowerUp{
 
     public WingMan(SpriteBatch batch, World world, String img){

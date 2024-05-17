@@ -11,6 +11,9 @@ import com.mygdx.game.Projectiles.Bullet;
 import com.mygdx.game.Characters.EnemyPlaneSprite;
 import com.mygdx.game.Projectiles.EnemyBullet;
 
+/**
+ * Controls enemy collisions with player bullets
+ */
 public class BulletCollision implements ContactListener {
     @Override
     public void beginContact(Contact contact) {

@@ -3,20 +3,47 @@ package com.mygdx.game.Background;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
+/**
+ * Moving background
+ */
 public class MovingBackgroundOcean {
+    /**
+     * Initial speed
+     */
     public static final int DEFAULT_SPEED = 80;
+    /**
+     * Acceleration
+     */
     public static final int ACCELERATION = 60;
+    /**
+     * Max speed
+     */
     public static final int GOAL_REACH_ACCELERATION = 200;
 
+    /**
+     * Ocean image
+     */
     Texture image;
+    /**
+     * y values of images
+     */
     float y1,y2;
+
+    /**
+     * current speed
+     */
     public int speed;
+    /**
+     * image scale
+     */
     float imageScale;
     boolean speedFixed;
     int goalSpeed;
 
 
-
+    /**
+     * Constructor for background
+     */
     public MovingBackgroundOcean() {
         image = new Texture("OceanBackground.jpeg");
 
@@ -31,6 +58,11 @@ public class MovingBackgroundOcean {
 
     }
 
+    /**
+     * Update method
+     * @param deltaTime time elapsed since last frame
+     * @param batch SpriteBatch used for rendering
+     */
     public void updateAndRender (float deltaTime, SpriteBatch batch) {
         //Speed adjustment to reach goal
         if (speed < goalSpeed) {

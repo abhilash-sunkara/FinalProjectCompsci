@@ -8,54 +8,72 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.utils.ScreenUtils;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.mygdx.game.Background.Button;
 import com.mygdx.game.Managers.MouseManager;
 
-
+/**
+ * Class for start screen
+ */
 public class StartingLevel extends Plane {
-    
 
+
+    /**
+     * Animated background object
+     */
     private Animation<TextureRegion> animation;
 
+    /**
+     * Textures for animated background
+     */
     private TextureRegion[] textureRegions;
-
-    private int textureCount;
-
-    private int timePast;
-
+    /**
+     * Timer for animation
+     */
     private float elapsed;
 
+    /**
+     * Font object for text
+     */
     private BitmapFont font;
 
-    private boolean renderPlane;
 
+    /**
+     * Background music
+     */
     private Music propBgMusic;
 
-    private Stage stage;
 
-    private Label outputLabel;
-
-    private TextButton button;
-
-    private Texture buttonImage;
-
+    /**
+     * Start button for game
+     */
     public Button startButton;
+    /**
+     * Info menu button
+     */
     public Button infoButton;
+    /**
+     * Back button to exit from info screen
+     */
     public Button backButton;
+    /**
+     * Mouse manager to track clicks
+     */
     public MouseManager mm;
 
+    /**
+     * Boolean that tracks whether info screen should be shown
+     */
     public boolean showInfoScreen;
+
+    /**
+     * Initializes all objects
+     */
     @Override
     public void create() {
         super.create();
 
-        buttonImage = new Texture("start.png");
+
 
         textureRegions = new TextureRegion[24];
 
@@ -80,28 +98,6 @@ public class StartingLevel extends Plane {
 
         font = generator.generateFont(params);
 
-        textureCount = 0;
-
-        timePast = 0;
-
-        stage = new Stage(new ScreenViewport());
-        Gdx.input.setInputProcessor(stage);
-
-        Skin mySkin = new Skin(Gdx.files.internal("TestSkin/glassy-ui.json"));
-        button = new TextButton("TestButton", mySkin, "small");
-        button.setSize(100,30);
-        button.setPosition(400-125, 240);
-        button.setTransform(true);
-        button.setScale(1f);
-
-
-        outputLabel = new Label("Press a Button", mySkin, "black");
-        outputLabel.setSize(100, 30);
-        outputLabel.setPosition(400 - 125, 240);
-        outputLabel.setAlignment(1);
-        //stage.addActor(outputLabel);
-
-        stage.addActor(button);
 
         startButton = new Button(436, 200, 160, 80, new Texture(Gdx.files.internal("StartButton.png")), new Texture(Gdx.files.internal("ButtonDown.png")), batch, 200, 80, 240, 80);
         infoButton = new Button(380, 260, 250, 200, new Texture(Gdx.files.internal("InfoButton.png")), new Texture(Gdx.files.internal("ButtonDown.png")), batch, 260, 200, 120, 40);
@@ -109,9 +105,10 @@ public class StartingLevel extends Plane {
         mm = new MouseManager();
     }
 
- 
 
-
+    /**
+     * Shows and plays music
+     */
     public void show(){
         if(!super.renderStartScene)
             return;
@@ -131,6 +128,9 @@ public class StartingLevel extends Plane {
         });
     }
 
+    /**
+     * Shows start screen
+     */
     public void showStartScreen(){
         elapsed += Gdx.graphics.getDeltaTime();
         super.batch.begin();
@@ -154,6 +154,9 @@ public class StartingLevel extends Plane {
         super.batch.end();
     }
 
+    /**
+     * Shows info screen
+     */
     public void showInfoScreen(){
         super.batch.begin();
         ScreenUtils.clear(0, 0, 0, 1);
@@ -168,6 +171,9 @@ public class StartingLevel extends Plane {
     }
 
 
+    /**
+     * Update-every-frame method that shows start and info screen
+     */
     @Override
     public void render(){
         if(super.renderStartScene) {

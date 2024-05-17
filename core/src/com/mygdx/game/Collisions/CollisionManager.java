@@ -5,6 +5,9 @@ import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Manifold;
 
+/**
+ * Controls all types of collisions
+ */
 public class CollisionManager implements ContactListener {
 
     BulletCollision bc = new BulletCollision();

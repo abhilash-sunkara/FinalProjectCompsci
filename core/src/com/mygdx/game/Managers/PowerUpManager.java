@@ -11,33 +11,86 @@ import com.mygdx.game.PowerUps.*;
 import com.badlogic.gdx.utils.Queue;
 
 
-
+/**
+ * Power up spawner and updater class
+ */
 public class PowerUpManager {
 
+    /**
+     * SpriteBatch object to update and render powerups
+     */
     private final SpriteBatch batch;
+    /**
+     * World object to track bodies
+     */
     private final World world;
 
 
+    /**
+     * Tracks all spawned powerups
+     */
     private final Array<PowerUp> spawnedPowerUps = new Array<>();
 
+    /**
+     * Queue that displays future powerups
+     */
     private final Queue<Spawnables> powerUps = new Queue<>();
 
-
+    /**
+     * Texture for {@link WingMan}
+     */
     private final Texture WingManTexture = new Texture(Gdx.files.internal("ship_0020.png"));
+
+    /**
+     * Texture for {@link MachineGun}
+     */
     private final Texture MachineGunTexture = new Texture(Gdx.files.internal("MachineGun.png"));
+
+    /**
+     * Texture for {@link ExtraSpeed}
+     */
     private final Texture ExtraSpeedTexture = new Texture(Gdx.files.internal("ExtraSpeed.png"));
+
+    /**
+     * Texture for {@link CarpetBomb}
+     */
     private final Texture CarpetBombTexture = new Texture(Gdx.files.internal("CarpetBomb.png"));
+
+    /**
+     * Texture for {@link ExtraLife}
+     */
     private final Texture ExtraLifeTexture = new Texture(Gdx.files.internal("ExtraLife.png"));
+
+    /**
+     * Boolean that checks if powerUp display needs to be updated
+     */
     private boolean needToUpdateDisplay = true;
+    /**
+     * powerUp display that stores the sprites that are shown
+     */
     private final Sprite[] powerUpDisplay = {new Sprite(WingManTexture), new Sprite(WingManTexture), new Sprite(WingManTexture), new Sprite(WingManTexture)};
 
+    /**
+     * Spawn delay between powerups
+     */
     private final float spawnDelay = 5f;
+    /**
+     * Timer that checks if power-up should be spawned
+     */
     private float spawnTime;
 
+    /**
+     * Boolean that checks if an extra life should be spawned based on player lives
+     */
     private boolean shouldSpawnExtraLife = false;
 
     //Sprite test = new Sprite(new Texture(Gdx.files.internal("ship_0020.png")));
 
+    /**
+     * Constructor for PowerUpManager
+     * @param sb SpriteBatch object for rendering sprites
+     * @param w World object to track bodies
+     */
     public PowerUpManager(SpriteBatch sb, World w){
         batch = sb;
         world = w;
@@ -45,6 +98,9 @@ public class PowerUpManager {
         initializePowerUps();
     }
 
+    /**
+     * Initializes future powerups
+     */
     public void initializePowerUps(){
         for(int i = 0; i < 4; i++){
             addRandom();
@@ -56,10 +112,16 @@ public class PowerUpManager {
         powerUpDisplay[0].setScale(2, 2);
     }
 
+    /**
+     * Checks if an extra life should be spawned
+     */
     public void checkShouldSpawnExtraLife(){
         shouldSpawnExtraLife = BluePlaneSprite.lives < 4;
     }
 
+    /**
+     * Update-every-frame method that controls springing and displaying powerups
+     */
     public void update(){
         checkShouldSpawnExtraLife();
         spawn();
@@ -67,6 +129,9 @@ public class PowerUpManager {
         //System.out.println(shouldSpawnExtraLife);
     }
 
+    /**
+     * Spawns a powerup based on first value in queue
+     */
     public void spawn(){
         Spawnables spawnPowerUpSpawn;
 
@@ -110,6 +175,9 @@ public class PowerUpManager {
         }
     }
 
+    /**
+     * Adds a random powerup to future powerups queue
+     */
     public void addRandom() {
         if (!shouldSpawnExtraLife) {
             //System.out.println("ran normal");
@@ -141,6 +209,9 @@ public class PowerUpManager {
         }
     }
 
+    /**
+     * displays future powerups
+     */
     public void displayFuturePowerUps(){
         if(needToUpdateDisplay) {
             for (int i = 0; i < 4; i++) {
@@ -166,12 +237,18 @@ public class PowerUpManager {
 
     }
 
+    /**
+     * Restarts all powerups
+     */
     public void restart(){
         powerUps.clear();
         spawnedPowerUps.clear();
         initializePowerUps();
     }
 
+    /**
+     * Shows all types of powerups that can be spawned
+     */
     public enum Spawnables{
         WINGMAN, MACHINEGUN, EXTRASPEED, CARPETBOMB, EXTRALIFE
     }

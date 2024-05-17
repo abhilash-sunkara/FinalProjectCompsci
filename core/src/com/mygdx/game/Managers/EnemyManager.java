@@ -13,17 +13,47 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class EnemyManager{
+    /**
+     * Arraylist of all active enemies
+     */
     private final ArrayList<EnemyPlaneSprite> enemies;
+    /**
+     * SpriteBatch to render all enemies
+     */
     SpriteBatch batch;
+    /**
+     * Timer to track when to spawn an enemy
+     */
     float time;
+    /**
+     * World object that tracks all bodies
+     */
     private final World world;
+    /**
+     * Spawn positions for enemies
+     */
     private final float[][] spawnPositions = {{100, 300, 500}, {200, 400}, {300}};
+    /**
+     * Decides whether enemies can move or not
+     */
     private int spawnWave = 0;
 
+    /**
+     * Arraylist to remove inactive bodies
+     */
     private final ArrayList<Body> bodyRemover;
 
+    /**
+     * Counts how many enemies have escaped
+     */
     public static int enemiesEscaped = 0;
 
+    /**
+     * Constructor for EnemyManager
+     * @param input SpriteBatch renderer to draw sprites
+     * @param world World to track bodies
+     * @param ar ArrayList to track inactive bodies
+     */
     public EnemyManager(SpriteBatch input, World world, ArrayList<Body> ar){
         batch = input;
         enemies = new ArrayList<>();
@@ -33,6 +63,9 @@ public class EnemyManager{
         bodyRemover = ar;
     }
 
+    /**
+     * Update-every-frame method that controls spawning and updating of enemy planes
+     */
     public void update(){
         time += Gdx.graphics.getDeltaTime();
         if(time > 2){
@@ -66,12 +99,18 @@ public class EnemyManager{
         }
     }
 
+    /**
+     * Restarts enemy manager when game is restarted
+     */
     public void restart(){
         clearAllEnemies();
         EnemyManager.enemiesEscaped = 0;
     }
 
 
+    /**
+     * Clears all enemies when restarted and when {@link com.mygdx.game.PowerUps.CarpetBomb} is used
+     */
     public void clearAllEnemies(){
         for(int i = 0; i < enemies.size(); i++){
             enemies.get(i).destroy();
