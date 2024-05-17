@@ -79,7 +79,7 @@ public class BluePlaneSprite {
         planeBody.setLinearDamping(2.0f);
         planeBody.setUserData(this);
 
-        planeBody.setTransform(50, 50, 0);
+        planeBody.setTransform(300, 80, 0);
 
         CircleShape cs = new CircleShape();
         cs.setRadius(6f);
@@ -265,7 +265,7 @@ public class BluePlaneSprite {
     public void reset(){
         if(!isWingManActive && shouldReset) {
             if (Plane.isAbleToReset) {
-                planeBody.setTransform(0, 0, 0f);
+                planeBody.setTransform(300, 80, 0f);
                 lives--;
                 shouldReset = false;
             }
@@ -306,10 +306,12 @@ public class BluePlaneSprite {
 
     public void restart(){
         BluePlaneSprite.lives = 4;
-        shouldReset = true;
+        //shouldReset = true;
         isWingManActive = false;
         invincibilityTimer = 0;
-        planeBody.setTransform(50, 50, 0);
+        shouldReset = true;
+        //planeBody.setTransform(300, 80, 0);
+        System.out.println("ran restart");
     }
 
     public void clearEnemies(){

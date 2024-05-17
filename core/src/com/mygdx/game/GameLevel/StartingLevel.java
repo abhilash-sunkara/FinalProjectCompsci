@@ -8,18 +8,13 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
-import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.mygdx.game.Background.Button;
-import com.mygdx.game.Background.RestartButton;
 import com.mygdx.game.Managers.MouseManager;
 
 
@@ -50,10 +45,12 @@ public class StartingLevel extends Plane {
 
     private Texture buttonImage;
 
-    public RestartButton rb;
-
+    public Button startButton;
+    public Button infoButton;
+    public Button backButton;
     public MouseManager mm;
 
+    public boolean showInfoScreen;
     @Override
     public void create() {
         super.create();
@@ -106,7 +103,9 @@ public class StartingLevel extends Plane {
 
         stage.addActor(button);
 
-        rb = new RestartButton(436, 200, 160, 80, new Texture(Gdx.files.internal("ButtonUp.png")), new Texture(Gdx.files.internal("ButtonDown.png")), batch, 200, 80, 240, 80);
+        startButton = new Button(436, 200, 160, 80, new Texture(Gdx.files.internal("StartButton.png")), new Texture(Gdx.files.internal("ButtonDown.png")), batch, 200, 80, 240, 80);
+        infoButton = new Button(380, 260, 250, 200, new Texture(Gdx.files.internal("InfoButton.png")), new Texture(Gdx.files.internal("ButtonDown.png")), batch, 260, 200, 120, 40);
+        backButton = new Button(436, 200, 160, 80, new Texture(Gdx.files.internal("BackButton.png")), new Texture(Gdx.files.internal("ButtonDown.png")), batch, 200, 80, 240, 80);
         mm = new MouseManager();
     }
 
@@ -132,27 +131,49 @@ public class StartingLevel extends Plane {
         });
     }
 
+    public void showStartScreen(){
+        elapsed += Gdx.graphics.getDeltaTime();
+        super.batch.begin();
+        super.batch.draw(animation.getKeyFrame(elapsed), -500f, -200f);
+        startButton.update();
+        infoButton.update();
+        if(mouseManager.checkMouseButtonClick(startButton)){
+            startButton.clickButton();
+            renderStartScene = false;
+        }
+        if(mouseManager.checkMouseButtonClick(infoButton)){
+            infoButton.clickButton();
+            showInfoScreen = true;
+        }
+        font.getData().setScale(1f);
+        font.draw(super.batch, "Press Enter To Start", Gdx.graphics.getWidth() * .15f, Gdx.graphics.getHeight() * .75f);
+        super.batch.end();
+    }
+
+    public void showInfoScreen(){
+        super.batch.begin();
+        ScreenUtils.clear(0, 0, 0, 1);
+        backButton.update();
+        if(mouseManager.checkMouseButtonClick(backButton)){
+            backButton.clickButton();
+            showInfoScreen = false;
+        }
+        font.getData().setScale(0.5f);
+        font.draw(super.batch, "Stop enemy planes from crossing the border \nwhile avoiding enemy fire \nCollect powerups to boost your performance", Gdx.graphics.getWidth() * .11f, Gdx.graphics.getHeight() * .75f);
+        super.batch.end();
+    }
+
 
     @Override
-
-
     public void render(){
         if(super.renderStartScene) {
             show();
-            stage.act();
-            stage.draw();
-            elapsed += Gdx.graphics.getDeltaTime();
-            super.batch.begin();
-            super.batch.draw(animation.getKeyFrame(elapsed), -500f, -200f);
-            //button.draw(super.batch, 1);
-            //outputLabel.draw(super.batch, 1);
-            restartButton.update();
-            if(mouseManager.checkMouseButtonClick(restartButton)){
-                restartButton.clickButton();
-                renderStartScene = false;
+            if(!showInfoScreen){
+                showStartScreen();
+            } else {
+                showInfoScreen();
             }
-            font.draw(super.batch, "Press Enter To Start", Gdx.graphics.getWidth() * .15f, Gdx.graphics.getHeight() * .75f);
-            super.batch.end();
+
         } else {
             super.render();
         }

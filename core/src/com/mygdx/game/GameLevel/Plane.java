@@ -75,7 +75,7 @@ public class Plane extends Game {
 		ui = new UserInterfaceManager(batch);
 		powerUps = new PowerUpManager(batch, world);
 		mouseManager = new MouseManager();
-		restartButton = new RestartButton(436, 200, 160, 80, new Texture(Gdx.files.internal("ButtonUp.png")), new Texture(Gdx.files.internal("ButtonDown.png")), batch, 200, 80, 240, 80);
+		restartButton = new RestartButton(436, 200, 160, 80, new Texture(Gdx.files.internal("RestartButton.png")), new Texture(Gdx.files.internal("ButtonDown.png")), batch, 200, 80, 240, 80);
 
 		debugRenderer = new Box2DDebugRenderer();
 		backgroundOcean = new MovingBackgroundOcean();
@@ -150,7 +150,7 @@ public class Plane extends Game {
 	public void updateManagers(){
 		backgroundOcean.updateAndRender(Gdx.graphics.getDeltaTime(), batch);
 		planeSprite.update();
-		//boss.update();
+		boss.update();
 		ui.render();
 		powerUps.update();
 	}

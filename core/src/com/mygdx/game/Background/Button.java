@@ -57,5 +57,6 @@ public class Button {
     public void reset(){
         isClicked = false;
         shownTexture = buttonUp;
+        updateHeight += 10;
     }
 }

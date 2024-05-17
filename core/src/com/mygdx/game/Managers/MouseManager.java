@@ -18,9 +18,17 @@ public class MouseManager {
         mouseY = 480 - Gdx.input.getY();
     }
 
+    public String getMousePos(){
+        return "Mouse X : " + mouseX + "\nMouse Y : " + mouseY;
+    }
+
+    public boolean checkPos(Button b){
+        return (b.leftX < mouseX && mouseX < b.rightX) && (b.bottomY < mouseY && mouseY < b.topY);
+    }
+
     public boolean checkMouseButtonClick(Button b){
         update();
-        return (b.leftX < mouseX && mouseX < b.rightX) && (b.bottomY < mouseY && mouseY < b.topY) && Gdx.input.isButtonPressed(Input.Buttons.LEFT);
+        return (b.leftX < mouseX && mouseX < b.rightX) && (b.bottomY < mouseY && mouseY < b.topY) && Gdx.input.isButtonJustPressed(Input.Buttons.LEFT);
     }
 
 }

@@ -68,11 +68,11 @@ public class EnemyPlaneSprite {
         TextureRegion[] textureRegions = new TextureRegion[12];
 
         for(int i = 0; i < textureRegions.length;i++){
-            textureRegions[i] = new TextureRegion(new Texture("explosion/2216f029-f689-46e0-84c5-c51cf89bbc38-" + i + ".png"));
+            //textureRegions[i] = new TextureRegion(new Texture("explosion/2216f029-f689-46e0-84c5-c51cf89bbc38-" + i + ".png"));
         }
 
-        explosion = new Animation<>(.1175F,textureRegions);
-        explosion.setPlayMode(Animation.PlayMode.NORMAL);
+        //explosion = new Animation<>(.1175F,textureRegions);
+        //explosion.setPlayMode(Animation.PlayMode.NORMAL);
     }
 
     public void enemyMovement(){
