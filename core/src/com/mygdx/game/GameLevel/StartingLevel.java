@@ -140,6 +140,10 @@ public class StartingLevel extends Plane {
         if(mouseManager.checkMouseButtonClick(startButton)){
             startButton.clickButton();
             renderStartScene = false;
+            propBgMusic = Gdx.audio.newMusic(Gdx.files.internal("prop.mp3"));
+            propBgMusic.setLooping(true);
+            propBgMusic.setVolume(.5f);
+            propBgMusic.play();
         }
         if(mouseManager.checkMouseButtonClick(infoButton)){
             infoButton.clickButton();

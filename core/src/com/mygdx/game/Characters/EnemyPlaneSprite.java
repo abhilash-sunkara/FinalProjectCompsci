@@ -94,7 +94,7 @@ public class EnemyPlaneSprite {
         body.setLinearVelocity(X_VEL, -MAX_VEL);
         elapsedTime += Gdx.graphics.getDeltaTime();
         System.out.println(elapsedTime);
-        if((Math.abs(Math.abs(body.getPosition().x)-0) < 1 || Math.abs(Math.abs(body.getPosition().x)-800) < 1) && elapsedTime - pastTime > .5 ) {
+        if((Math.abs(Math.abs(body.getPosition().x)-0) < 1 || Math.abs(Math.abs(body.getPosition().x)-625) < 10) && elapsedTime - pastTime > .5 ) {
             pastTime = elapsedTime;
             X_VEL = -X_VEL;
         }

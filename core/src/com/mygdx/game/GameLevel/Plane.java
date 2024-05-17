@@ -118,6 +118,7 @@ public class Plane extends Game {
 		//System.out.println("Should Lose : " + shouldLose());
 
 		if(shouldPlay()) {
+
 			ScreenUtils.clear(1, 1, 1, 1);
 			batch.begin();
 			updateManagers();
