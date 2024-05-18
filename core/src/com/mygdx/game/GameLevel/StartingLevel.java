@@ -183,12 +183,6 @@ public class StartingLevel extends Plane {
             } else {
                 showInfoScreen();
             }
-<<<<<<< HEAD
-            font.draw(super.batch, "Press Button To Start", Gdx.graphics.getWidth() * .15f, Gdx.graphics.getHeight() * .75f);
-            super.batch.end();
-=======
-
->>>>>>> 9ddacc1343f3d3c093546b81bc14e8fd2bb3598c
         } else {
             super.render();
         }
