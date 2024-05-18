@@ -151,7 +151,7 @@ public class StartingLevel extends Plane {
                 restartButton.clickButton();
                 renderStartScene = false;
             }
-            font.draw(super.batch, "Press Enter To Start", Gdx.graphics.getWidth() * .15f, Gdx.graphics.getHeight() * .75f);
+            font.draw(super.batch, "Press Button To Start", Gdx.graphics.getWidth() * .15f, Gdx.graphics.getHeight() * .75f);
             super.batch.end();
         } else {
             super.render();
