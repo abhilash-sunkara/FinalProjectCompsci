@@ -6,16 +6,46 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.physics.box2d.*;
 
+/**
+ * Bullet object
+ */
 public class Bullet {
 
+    /**
+     * Sprite object that contains images
+     */
     public Sprite sprite;
+    /**
+     * SpriteBatch used to render sprite
+     */
     public SpriteBatch renderer;
+    /**
+     * checks is bullet is active
+     */
     public boolean isActive = true;
+    /**
+     * Body definition for collision
+     */
     private BodyDef bd = new BodyDef();
+    /**
+     * World object to track active bodies
+     */
     private World world;
+    /**
+     * Body object for collisions
+     */
     public Body body;
+    /**
+     * Fixture object to control collisions
+     */
     private Fixture f;
 
+    /**
+     * Constructor for Bullet
+     * @param imgFile image filepath
+     * @param spriteBatch SpriteBatch to render sprites
+     * @param world World to track bodies
+     */
     public Bullet(String imgFile, SpriteBatch spriteBatch, World world){
         sprite = new Sprite(new Texture(Gdx.files.internal(imgFile)));
         sprite.setScale(0.046875f);
@@ -41,6 +71,9 @@ public class Bullet {
         //System.out.println("created");
     }
 
+    /**
+     * moves bullet using constant velocity
+     */
     public void bulletMovement(){
         body.setLinearVelocity(0f, 1000f);
         if(sprite.getY() > 5000){
@@ -49,6 +82,9 @@ public class Bullet {
         sprite.setPosition(body.getPosition().x - 40, body.getPosition().y);
     }
 
+    /**
+     * updates movement and drawing
+     */
     public void update(){
         if(isActive){
             //System.out.println("bullet updating : " + body.getPosition().y);
@@ -57,12 +93,21 @@ public class Bullet {
         }
     }
 
+    /**
+     * initializes position of bullet
+     * @param x x value
+     * @param y y value
+     * @return self bullet
+     */
     public Bullet setPosition(float x, float y){
         sprite.setPosition(x-50, y-100);
         body.setTransform(x, y-100, 0);
         return this;
     }
 
+    /**
+     * destroys bullet
+     */
     public void destroy(){
         isActive = false;
         //f.setSensor(true);

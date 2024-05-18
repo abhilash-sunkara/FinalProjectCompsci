@@ -8,57 +8,72 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
-import com.badlogic.gdx.scenes.scene2d.*;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.utils.ScreenUtils;
 import com.mygdx.game.Background.Button;
-import com.mygdx.game.Background.RestartButton;
 import com.mygdx.game.Managers.MouseManager;
 
-
+/**
+ * Class for start screen
+ */
 public class StartingLevel extends Plane {
-    
 
+
+    /**
+     * Animated background object
+     */
     private Animation<TextureRegion> animation;
 
+    /**
+     * Textures for animated background
+     */
     private TextureRegion[] textureRegions;
-
-    private int textureCount;
-
-    private int timePast;
-
+    /**
+     * Timer for animation
+     */
     private float elapsed;
 
+    /**
+     * Font object for text
+     */
     private BitmapFont font;
 
-    private boolean renderPlane;
 
+    /**
+     * Background music
+     */
     private Music propBgMusic;
 
-    private Stage stage;
 
-    private Label outputLabel;
-
-    private TextButton button;
-
-    private Texture buttonImage;
-
-    public RestartButton rb;
-
+    /**
+     * Start button for game
+     */
+    public Button startButton;
+    /**
+     * Info menu button
+     */
+    public Button infoButton;
+    /**
+     * Back button to exit from info screen
+     */
+    public Button backButton;
+    /**
+     * Mouse manager to track clicks
+     */
     public MouseManager mm;
 
+    /**
+     * Boolean that tracks whether info screen should be shown
+     */
+    public boolean showInfoScreen;
+
+    /**
+     * Initializes all objects
+     */
     @Override
     public void create() {
         super.create();
 
-        buttonImage = new Texture("start.png");
+
 
         textureRegions = new TextureRegion[24];
 
@@ -83,36 +98,17 @@ public class StartingLevel extends Plane {
 
         font = generator.generateFont(params);
 
-        textureCount = 0;
 
-        timePast = 0;
-
-        stage = new Stage(new ScreenViewport());
-        Gdx.input.setInputProcessor(stage);
-
-        Skin mySkin = new Skin(Gdx.files.internal("TestSkin/glassy-ui.json"));
-        button = new TextButton("TestButton", mySkin, "small");
-        button.setSize(100,30);
-        button.setPosition(400-125, 240);
-        button.setTransform(true);
-        button.setScale(1f);
-
-
-        outputLabel = new Label("Press a Button", mySkin, "black");
-        outputLabel.setSize(100, 30);
-        outputLabel.setPosition(400 - 125, 240);
-        outputLabel.setAlignment(1);
-        //stage.addActor(outputLabel);
-
-        stage.addActor(button);
-
-        rb = new RestartButton(436, 200, 160, 80, new Texture(Gdx.files.internal("ButtonUp.png")), new Texture(Gdx.files.internal("ButtonDown.png")), batch, 200, 80, 240, 80);
+        startButton = new Button(436, 200, 160, 80, new Texture(Gdx.files.internal("StartButton.png")), new Texture(Gdx.files.internal("ButtonDown.png")), batch, 200, 80, 240, 80);
+        infoButton = new Button(380, 260, 250, 200, new Texture(Gdx.files.internal("InfoButton.png")), new Texture(Gdx.files.internal("ButtonDown.png")), batch, 260, 200, 120, 40);
+        backButton = new Button(436, 200, 160, 80, new Texture(Gdx.files.internal("BackButton.png")), new Texture(Gdx.files.internal("ButtonDown.png")), batch, 200, 80, 240, 80);
         mm = new MouseManager();
     }
 
- 
 
-
+    /**
+     * Shows and plays music
+     */
     public void show(){
         if(!super.renderStartScene)
             return;
@@ -132,27 +128,67 @@ public class StartingLevel extends Plane {
         });
     }
 
+    /**
+     * Shows start screen
+     */
+    public void showStartScreen(){
+        elapsed += Gdx.graphics.getDeltaTime();
+        super.batch.begin();
+        super.batch.draw(animation.getKeyFrame(elapsed), -500f, -200f);
+        startButton.update();
+        infoButton.update();
+        if(mouseManager.checkMouseButtonClick(startButton)){
+            startButton.clickButton();
+            renderStartScene = false;
+            propBgMusic = Gdx.audio.newMusic(Gdx.files.internal("prop.mp3"));
+            propBgMusic.setLooping(true);
+            propBgMusic.setVolume(.5f);
+            propBgMusic.play();
+        }
+        if(mouseManager.checkMouseButtonClick(infoButton)){
+            infoButton.clickButton();
+            showInfoScreen = true;
+        }
+        font.getData().setScale(1f);
+        font.draw(super.batch, "Press Enter To Start", Gdx.graphics.getWidth() * .15f, Gdx.graphics.getHeight() * .75f);
+        super.batch.end();
+    }
 
+    /**
+     * Shows info screen
+     */
+    public void showInfoScreen(){
+        super.batch.begin();
+        ScreenUtils.clear(0, 0, 0, 1);
+        backButton.update();
+        if(mouseManager.checkMouseButtonClick(backButton)){
+            backButton.clickButton();
+            showInfoScreen = false;
+        }
+        font.getData().setScale(0.5f);
+        font.draw(super.batch, "Stop enemy planes from crossing the border \nwhile avoiding enemy fire \nCollect powerups to boost your performance", Gdx.graphics.getWidth() * .11f, Gdx.graphics.getHeight() * .75f);
+        super.batch.end();
+    }
+
+
+    /**
+     * Update-every-frame method that shows start and info screen
+     */
     @Override
-
-
     public void render(){
         if(super.renderStartScene) {
             show();
-            stage.act();
-            stage.draw();
-            elapsed += Gdx.graphics.getDeltaTime();
-            super.batch.begin();
-            super.batch.draw(animation.getKeyFrame(elapsed), -500f, -200f);
-            //button.draw(super.batch, 1);
-            //outputLabel.draw(super.batch, 1);
-            restartButton.update();
-            if(mouseManager.checkMouseButtonClick(restartButton)){
-                restartButton.clickButton();
-                renderStartScene = false;
+            if(!showInfoScreen){
+                showStartScreen();
+            } else {
+                showInfoScreen();
             }
+<<<<<<< HEAD
             font.draw(super.batch, "Press Button To Start", Gdx.graphics.getWidth() * .15f, Gdx.graphics.getHeight() * .75f);
             super.batch.end();
+=======
+
+>>>>>>> 9ddacc1343f3d3c093546b81bc14e8fd2bb3598c
         } else {
             super.render();
         }

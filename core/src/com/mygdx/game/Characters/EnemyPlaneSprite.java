@@ -9,37 +9,91 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Timer;
-import com.mygdx.game.Collisions.BulletCollision;
 import com.mygdx.game.Projectiles.EnemyBullet;
 
 import java.util.ArrayList;
 
+/**
+ * Enemy Plane Class
+ */
 public class EnemyPlaneSprite {
 
+    /**
+     * Sprite to hold images
+     */
     private final Sprite sprite;
+    /**
+     * SpriteBatch to render sprite
+     */
     private final SpriteBatch renderer;
+    /**
+     * Body Definition for collisions
+     */
     private final BodyDef bd = new BodyDef();
+    /**
+     * World to track bodies
+     */
     private final World w;
 
+    /**
+     * Body ot detect collisions
+     */
     public Body body;
 
+    /**
+     * Max velocity
+     */
     private final float MAX_VEL = 20f;
 
+    /**
+     * Timer to allow enemy plane to shoot
+     */
     private float timer = 0f;
-    private final float bulletTimer = 0f;
+    /**
+     * ArrayList to store all bullets
+     */
     private final ArrayList<EnemyBullet> enemyBullets = new ArrayList<>();
 
+    /**
+     * Arraulist to remove inactive bodies
+     */
     private final ArrayList<Body> bodyRemover;
 
+    /**
+     * Checks if enemy is active
+     */
     public boolean isActive = true;
 
-    public boolean exploding = false;
 
+    /**
+     * Fixture to control collisions
+     */
     private final Fixture f;
 
-    public Animation<TextureRegion> explosion;
+    /**
+     * X velocity
+     */
+    private float X_VEL = 20;
 
-    public EnemyPlaneSprite(String imgFile, SpriteBatch batch, World world, ArrayList<Body> ar){
+    /**
+     * Movement timer
+     */
+    private float pastTime;
+
+    /**
+     * checks if enemy should move
+     */
+    private float elapsedTime;
+
+    /**
+     * Constructor for enemy
+     * @param imgFile Image filepath
+     * @param batch SpriteBatch to render images
+     * @param world World to track bodies
+     * @param ar ArrayList for removed bodies
+     * @param canMove decides if enemy can move from side to side
+     */
+    public EnemyPlaneSprite(String imgFile, SpriteBatch batch, World world, ArrayList<Body> ar, boolean canMove){
         sprite = new Sprite(new Texture(Gdx.files.internal(imgFile)));
         renderer = batch;
         sprite.setFlip(false, true);
@@ -65,43 +119,49 @@ public class EnemyPlaneSprite {
 
         bodyRemover = ar;
 
-        TextureRegion[] textureRegions = new TextureRegion[12];
 
-        for(int i = 0; i < textureRegions.length;i++){
-            textureRegions[i] = new TextureRegion(new Texture("explosion/2216f029-f689-46e0-84c5-c51cf89bbc38-" + i + ".png"));
+
+        if(canMove){
+            int rand = (int)(Math.random() * 2) + 1;
+            X_VEL = rand > 1 ? 20 : -20;
+        }else{
+            X_VEL = 0;
         }
-
-        explosion = new Animation<>(.1175F,textureRegions);
-        explosion.setPlayMode(Animation.PlayMode.NORMAL);
     }
 
+    /**
+     * Controls movement
+     */
     public void enemyMovement(){
-        body.setLinearVelocity(0, -MAX_VEL);
+        body.setLinearVelocity(X_VEL, -MAX_VEL);
+        elapsedTime += Gdx.graphics.getDeltaTime();
+        System.out.println(elapsedTime);
+        if((Math.abs(Math.abs(body.getPosition().x)-0) < 1 || Math.abs(Math.abs(body.getPosition().x)-625) < 10) && elapsedTime - pastTime > .5 ) {
+            pastTime = elapsedTime;
+            X_VEL = -X_VEL;
+        }
         sprite.setPosition(body.getPosition().x, body.getPosition().y);
     }
 
+    /**
+     * Initializes position
+     * @param x x position
+     * @param y y position
+     * @return reference to self
+     */
     public EnemyPlaneSprite setStartPos(float x, float y){
         body.setTransform(new Vector2(x, y), 0);
         sprite.setPosition(x, y);
         return this;
     }
 
+    /**
+     * Controls weapon and shooting
+     */
     public void weaponControl(){
         boolean canShoot = false;
         timer += Gdx.graphics.getDeltaTime();
         if(timer > 1.2){
-            /*
-            enemyBullets.add(new EnemyBullet("jTracer.png", renderer, w).setPosition(sprite.getX(), sprite.getY()));
-
-            bulletTimer += Gdx.graphics.getDeltaTime();
-            for(int i = 0; i < 5; i++){
-                if(bulletTimer > 0.5){
-                    enemyBullets.add(new EnemyBullet("jTracer.png", renderer, w).setPosition(sprite.getX(), sprite.getY()));
-                }
-            }
-            timer = 0;
-            */
-
             canShoot = true;
             timer = 0;
 
@@ -127,9 +187,12 @@ public class EnemyPlaneSprite {
         }
     }
 
+    /**
+     * destroys enemy
+     */
     public void destroy(){
         isActive = false;
-        exploding = true;
+
       //  f.setSensor(true);
 
         for(EnemyBullet eb : enemyBullets){
@@ -139,6 +202,10 @@ public class EnemyPlaneSprite {
 
     }
 
+
+    /**
+     * update-every-frame method that controls movement and weapons
+     */
     public void update(){
         if(isActive){
             enemyMovement();
@@ -147,12 +214,20 @@ public class EnemyPlaneSprite {
         }
     }
 
+    /**
+     * checks if enemy is out of bounds
+     * @return boolean that is true if enemy is offscreen
+     */
     public boolean isOutOfBounds(){
 
         return body.getPosition().y < 0;
 
     }
 
+    /**
+     * Gets position of enemy
+     * @return position of enemy
+     */
     public Vector2 getPosition(){
         return body.getPosition();
     }

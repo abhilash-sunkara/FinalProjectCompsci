@@ -15,7 +15,6 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.mygdx.game.Background.Button;
-import com.mygdx.game.Background.RestartButton;
 import com.mygdx.game.Characters.BluePlaneSprite;
 import com.mygdx.game.Characters.WingManSprite;
 import com.mygdx.game.Background.MovingBackgroundOcean;
@@ -29,37 +28,105 @@ import com.badlogic.gdx.graphics.Color;
 
 import java.util.ArrayList;
 
+/**
+ * Main gameplay class
+ */
 public class Plane extends Game {
+	/**
+	 * SpriteBatch object used to render and draw sprites and objects
+	 */
 	public SpriteBatch batch;
 
+	/**
+	 * Camera that shows rendered images on screen
+	 */
 	OrthographicCamera camera;
 
+	/**
+	 * String filepath for player image
+	 */
 	String bluePlaneImg = "p-51.png";
+	/**
+	 * Player object
+	 */
 	BluePlaneSprite planeSprite;
+	/**
+	 * World object that tracks all active bodies and collisions
+	 */
 	World world;
+	/**
+	 * EnemyManager object that tracks active enemies
+	 */
 	EnemyManager boss;
+	/**
+	 * UserInterface object that shows lives and escaped enemies
+	 */
 	UserInterfaceManager ui;
+	/**
+	 * PowerUpManager object that tracks and spawns powerups
+	 */
 	PowerUpManager powerUps;
+
+	/**
+	 * Renderer that shows raw collision data
+	 */
 	Box2DDebugRenderer debugRenderer;
+
+	/**
+	 * MouseManager object that tracks button clicks
+	 */
 	MouseManager mouseManager;
 
+	/**
+	 * Button object for restarting object from endscreen
+	 */
 	Button restartButton;
+	/**
+	 * Bodies that need to be removed from the game
+	 */
 	ArrayList<Body> bodyRemover = new ArrayList<>();
+	/**
+	 * Tracks all already removed bodies
+	 */
 	ArrayList<Body> removedBodies = new ArrayList<>();
 
+	/**
+	 * Nonmoving bodies tagged for removal
+	 */
 	Array<Body> removeNonMovingBodies = new Array<>();
 
+	/**
+	 * Animated background object
+	 */
 	MovingBackgroundOcean backgroundOcean;
 
+	/**
+	 * Tracks if bodies are able to reset
+	 */
 	public static boolean isAbleToReset = false;
+	/**
+	 * Font for endscreen
+	 */
 	private BitmapFont font;
 
+	/**
+	 * Tracks amount of time that game is running
+	 */
 	private float timer;
+	/**
+	 * TIme needed to win game
+	 */
 	private float timeToWin = 30;
 
+	/**
+	 * Tracks if start screen should be rendered
+	 */
 	public boolean renderStartScene = true;
 	public boolean playGame = true;
 
+	/**
+	 * Initializes all objects
+	 */
 	@Override
 	public void create () {
 		camera = new OrthographicCamera();
@@ -75,7 +142,7 @@ public class Plane extends Game {
 		ui = new UserInterfaceManager(batch);
 		powerUps = new PowerUpManager(batch, world);
 		mouseManager = new MouseManager();
-		restartButton = new RestartButton(436, 200, 160, 80, new Texture(Gdx.files.internal("ButtonUp.png")), new Texture(Gdx.files.internal("ButtonDown.png")), batch, 200, 80, 240, 80);
+		restartButton = new Button(436, 200, 160, 80, new Texture(Gdx.files.internal("RestartButton.png")), new Texture(Gdx.files.internal("ButtonDown.png")), batch, 200, 80, 240, 80);
 
 		debugRenderer = new Box2DDebugRenderer();
 		backgroundOcean = new MovingBackgroundOcean();
@@ -97,27 +164,40 @@ public class Plane extends Game {
 		font = generator.generateFont(params);
 	}
 
+	/**
+	 * Checks if game should still be running
+	 * @return boolean that checks whether game should be running
+	 */
 	public boolean shouldPlay(){
 		//System.out.println("Lives : " + BluePlaneSprite.lives);
 		//System.out.println("Enemies escaped : " + EnemyManager.enemiesEscaped);
 		return (BluePlaneSprite.lives > 0 && EnemyManager.enemiesEscaped < 8) && (timer < timeToWin);
 	}
 
+	/**
+	 * Checks if player should lose the game
+	 * @return boolean that checks whether the player has lost the game
+	 */
 	public boolean shouldLose(){
 		return BluePlaneSprite.lives <= 0 || EnemyManager.enemiesEscaped >= 8;
 	}
 
+	/**
+	 * Checks if player should win the game
+	 * @return boolean that checks whether the player has won the game
+	 */
 	public boolean shouldWin(){
 		return timer > timeToWin;
 	}
 
+	/**
+	 * Update-every-frame method that controls everything in the game
+	 */
 	public void render () {
 		timer += Gdx.graphics.getDeltaTime();
 
-		//System.out.println("Should Play : " + shouldPlay());
-		//System.out.println("Should Lose : " + shouldLose());
-
 		if(shouldPlay()) {
+
 			ScreenUtils.clear(1, 1, 1, 1);
 			batch.begin();
 			updateManagers();
@@ -144,17 +224,22 @@ public class Plane extends Game {
 			batch.dispose();
 			batch.end();
 		}
-
 	}
 
+	/**
+	 * Updates all managers in the game
+	 */
 	public void updateManagers(){
 		backgroundOcean.updateAndRender(Gdx.graphics.getDeltaTime(), batch);
 		planeSprite.update();
-		//boss.update();
+		boss.update();
 		ui.render();
 		powerUps.update();
 	}
 
+	/**
+	 * Renders endscreen
+	 */
 	public void showEndScreen(){
 		Gdx.gl.glClearColor(.25f, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -169,6 +254,9 @@ public class Plane extends Game {
 		batch.end();
 	}
 
+	/**
+	 * Rendered win screen
+	 */
 	public void showWinScreen(){
 		Gdx.gl.glClearColor(.25f, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -183,6 +271,9 @@ public class Plane extends Game {
 		batch.end();
 	}
 
+	/**
+	 * Restarts the game when {@link Plane#restartButton} is clicked
+	 */
 	public void restart(){
 		planeSprite.restart();
 		boss.restart();
@@ -190,6 +281,9 @@ public class Plane extends Game {
 		timer = 0;
 	}
 
+	/**
+	 * Removes all inactive and nonmoving bodies
+	 */
 	public void removeAllInactive(){
 		world.getBodies(removeNonMovingBodies);
 		for(Body b : removeNonMovingBodies){
@@ -208,7 +302,10 @@ public class Plane extends Game {
 			}
 		}
 	}
-	
+
+	/**
+	 * Destroys all sprites in the renderer
+	 */
 	@Override
 	public void dispose () {
 		batch.dispose();
